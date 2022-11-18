@@ -3,11 +3,13 @@ defmodule Portfolio.Repo.Migrations.CreateWallets do
 
   def change do
     create table(:wallets) do
-      add :name, :string
+      add :name, :string, null: false
       add :subwallet, :string
       add :type, :integer
 
       timestamps()
     end
+    
+    create unique_index(:wallets, [:name, :subwallet])
   end
 end

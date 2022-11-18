@@ -3,13 +3,14 @@ defmodule Portfolio.Repo.Migrations.CreatePrices do
 
   def change do
     create table(:prices) do
-      add :date, :date
-      add :price, :float
-      add :asset, references(:assets, on_delete: :nothing)
+      add :date, :date, null: false
+      add :price, :float, null: false
+      add :asset_id, references(:assets, on_delete: :nothing)
 
       timestamps()
     end
 
-    create index(:prices, [:asset])
+    create index(:prices, [:asset_id])
+    create unique_index(:prices, [:date, :asset_id])
   end
 end

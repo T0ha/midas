@@ -3,10 +3,12 @@ defmodule Portfolio.Repo.Migrations.CreateAssets do
 
   def change do
     create table(:assets) do
-      add :name, :string
-      add :ticker, :string
+      add :name, :string, null: false
+      add :ticker, :string, null: false
 
       timestamps()
     end
+
+    create unique_index(:assets, [:name])
   end
 end
