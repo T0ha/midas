@@ -5,8 +5,7 @@ defmodule Portfolio.Repo.Migrations.CreateAssets do
     create table(:assets) do
       add :name, :string, null: false
       add :ticker, :string, null: false
-
-      timestamps()
+      add :gecko_id, :string, null: false
     end
 
     create unique_index(:assets, [:name])
