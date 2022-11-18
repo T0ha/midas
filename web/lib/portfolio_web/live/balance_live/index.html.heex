@@ -1,0 +1,43 @@
+<h1>Listing Balances</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.balance_index_path(@socket, :index)}>
+    <.live_component
+      module={PortfolioWeb.BalanceLive.FormComponent}
+      id={@balance.id || :new}
+      title={@page_title}
+      action={@live_action}
+      balance={@balance}
+      return_to={Routes.balance_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Amount</th>
+      <th>Locked</th>
+      <th>Unlock datetime</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="balances">
+    <%= for balance <- @balances do %>
+      <tr id={"balance-#{balance.id}"}>
+        <td><%= balance.amount %></td>
+        <td><%= balance.locked %></td>
+        <td><%= balance.unlock_datetime %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.balance_show_path(@socket, :show, balance) %></span>
+          <span><%= live_patch "Edit", to: Routes.balance_index_path(@socket, :edit, balance) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: balance.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Balance", to: Routes.balance_index_path(@socket, :new) %></span>

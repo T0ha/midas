@@ -1,0 +1,36 @@
+<h1>Show Balance</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.balance_show_path(@socket, :show, @balance)}>
+    <.live_component
+      module={PortfolioWeb.BalanceLive.FormComponent}
+      id={@balance.id}
+      title={@page_title}
+      action={@live_action}
+      balance={@balance}
+      return_to={Routes.balance_show_path(@socket, :show, @balance)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Amount:</strong>
+    <%= @balance.amount %>
+  </li>
+
+  <li>
+    <strong>Locked:</strong>
+    <%= @balance.locked %>
+  </li>
+
+  <li>
+    <strong>Unlock datetime:</strong>
+    <%= @balance.unlock_datetime %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.balance_show_path(@socket, :edit, @balance), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.balance_index_path(@socket, :index) %></span>

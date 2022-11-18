@@ -1,0 +1,41 @@
+<h1>Listing Prices</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.price_index_path(@socket, :index)}>
+    <.live_component
+      module={PortfolioWeb.PriceLive.FormComponent}
+      id={@price.id || :new}
+      title={@page_title}
+      action={@live_action}
+      price={@price}
+      return_to={Routes.price_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Price</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="prices">
+    <%= for price <- @prices do %>
+      <tr id={"price-#{price.id}"}>
+        <td><%= price.date %></td>
+        <td><%= price.price %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.price_show_path(@socket, :show, price) %></span>
+          <span><%= live_patch "Edit", to: Routes.price_index_path(@socket, :edit, price) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: price.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Price", to: Routes.price_index_path(@socket, :new) %></span>

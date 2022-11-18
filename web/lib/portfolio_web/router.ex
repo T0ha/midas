@@ -21,6 +21,34 @@ defmodule PortfolioWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    live "/assets", AssetLive.Index, :index
+    live "/assets/new", AssetLive.Index, :new
+    live "/assets/:id/edit", AssetLive.Index, :edit
+
+    live "/assets/:id", AssetLive.Show, :show
+    live "/assets/:id/show/edit", AssetLive.Show, :edit
+
+    live "/balances", BalanceLive.Index, :index
+    live "/balances/new", BalanceLive.Index, :new
+    live "/balances/:id/edit", BalanceLive.Index, :edit
+
+    live "/balances/:id", BalanceLive.Show, :show
+    live "/balances/:id/show/edit", BalanceLive.Show, :edit
+
+    live "/prices", PriceLive.Index, :index
+    live "/prices/new", PriceLive.Index, :new
+    live "/prices/:id/edit", PriceLive.Index, :edit
+
+    live "/prices/:id", PriceLive.Show, :show
+    live "/prices/:id/show/edit", PriceLive.Show, :edit
+
+    live "/wallets", WalletLive.Index, :index
+    live "/wallets/new", WalletLive.Index, :new
+    live "/wallets/:id/edit", WalletLive.Index, :edit
+
+    live "/wallets/:id", WalletLive.Show, :show
+    live "/wallets/:id/show/edit", WalletLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

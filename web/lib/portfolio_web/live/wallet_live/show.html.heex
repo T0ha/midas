@@ -1,0 +1,36 @@
+<h1>Show Wallet</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.wallet_show_path(@socket, :show, @wallet)}>
+    <.live_component
+      module={PortfolioWeb.WalletLive.FormComponent}
+      id={@wallet.id}
+      title={@page_title}
+      action={@live_action}
+      wallet={@wallet}
+      return_to={Routes.wallet_show_path(@socket, :show, @wallet)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @wallet.name %>
+  </li>
+
+  <li>
+    <strong>Subwallet:</strong>
+    <%= @wallet.subwallet %>
+  </li>
+
+  <li>
+    <strong>Type:</strong>
+    <%= @wallet.type %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.wallet_show_path(@socket, :edit, @wallet), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.wallet_index_path(@socket, :index) %></span>

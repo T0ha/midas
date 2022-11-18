@@ -1,0 +1,31 @@
+<h1>Show Price</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.price_show_path(@socket, :show, @price)}>
+    <.live_component
+      module={PortfolioWeb.PriceLive.FormComponent}
+      id={@price.id}
+      title={@page_title}
+      action={@live_action}
+      price={@price}
+      return_to={Routes.price_show_path(@socket, :show, @price)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Date:</strong>
+    <%= @price.date %>
+  </li>
+
+  <li>
+    <strong>Price:</strong>
+    <%= @price.price %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.price_show_path(@socket, :edit, @price), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.price_index_path(@socket, :index) %></span>
