@@ -5,6 +5,7 @@ defmodule Portfolio.Assets.Asset do
   schema "assets" do
     field :name, :string
     field :ticker, :string
+    field :fetch, :boolean
 
     timestamps()
   end
@@ -12,7 +13,7 @@ defmodule Portfolio.Assets.Asset do
   @doc false
   def changeset(asset, attrs) do
     asset
-    |> cast(attrs, [:name, :ticker])
+    |> cast(attrs, [:name, :ticker, :fetch])
     |> validate_required([:name, :ticker])
   end
 end

@@ -1,11 +1,14 @@
 defmodule Portfolio.Assets.Price do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Portfolio.Assets.Asset
 
   schema "prices" do
     field :date, :date
     field :price, :float
-    field :asset, :id
+    field :currency, :string
+    belongs_to :asset, Asset
+
 
     timestamps()
   end
