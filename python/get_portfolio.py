@@ -14,7 +14,7 @@ def main():
 
     portfolio = client.account()
     print(portfolio)
-    portfolio_pd = pd.DataFrame(portfolio['balances'])
+    portfolio_pd = pd.DataFrame(portfolio['balances'], dtype='float')
     portfolio_pd = portfolio_pd.set_index(portfolio_pd['asset'])
     print(portfolio_pd.loc[(portfolio_pd['free'] != 0)])
     #await client.close()
