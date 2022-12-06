@@ -13,9 +13,12 @@ config :portfolio,
 # Configures the endpoint
 config :portfolio, PortfolioWeb.Endpoint,
   url: [host: "localhost"],
-  render_errors: [view: PortfolioWeb.ErrorView, accepts: ~w(html json), layout: false],
+  render_errors: [
+    formats: [html: PortfolioWeb.ErrorHTML, json: PortfolioWeb.ErrorJSON],
+    layout: false
+  ],
   pubsub_server: Portfolio.PubSub,
-  live_view: [signing_salt: "utXL13Sq"]
+  live_view: [signing_salt: "RwiZY5Zd"]
 
 # Configures the mailer
 #
@@ -26,17 +29,26 @@ config :portfolio, PortfolioWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :portfolio, Portfolio.Mailer, adapter: Swoosh.Adapters.Local
 
-# Swoosh API client is needed for adapters other than SMTP.
-config :swoosh, :api_client, false
-
 # Configure esbuild (the version is required)
 config :esbuild,
-  version: "0.13.5",
+  version: "0.14.41",
   default: [
     args:
       ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+  ]
+
+# Configure tailwind (the version is required)
+config :tailwind,
+  version: "3.1.8",
+  default: [
+    args: ~w(
+      --config=tailwind.config.js
+      --input=css/app.css
+      --output=../priv/static/assets/app.css
+    ),
+    cd: Path.expand("../assets", __DIR__)
   ]
 
 # Configures Elixir's Logger

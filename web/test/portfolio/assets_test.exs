@@ -8,7 +8,7 @@ defmodule Portfolio.AssetsTest do
 
     import Portfolio.AssetsFixtures
 
-    @invalid_attrs %{name: nil, ticker: nil}
+    @invalid_attrs %{fetch: nil, gecko_id: nil, name: nil, ticker: nil}
 
     test "list_assets/0 returns all assets" do
       asset = asset_fixture()
@@ -21,9 +21,11 @@ defmodule Portfolio.AssetsTest do
     end
 
     test "create_asset/1 with valid data creates a asset" do
-      valid_attrs = %{name: "some name", ticker: "some ticker"}
+      valid_attrs = %{fetch: true, gecko_id: "some gecko_id", name: "some name", ticker: "some ticker"}
 
       assert {:ok, %Asset{} = asset} = Assets.create_asset(valid_attrs)
+      assert asset.fetch == true
+      assert asset.gecko_id == "some gecko_id"
       assert asset.name == "some name"
       assert asset.ticker == "some ticker"
     end
@@ -34,9 +36,11 @@ defmodule Portfolio.AssetsTest do
 
     test "update_asset/2 with valid data updates the asset" do
       asset = asset_fixture()
-      update_attrs = %{name: "some updated name", ticker: "some updated ticker"}
+      update_attrs = %{fetch: false, gecko_id: "some updated gecko_id", name: "some updated name", ticker: "some updated ticker"}
 
       assert {:ok, %Asset{} = asset} = Assets.update_asset(asset, update_attrs)
+      assert asset.fetch == false
+      assert asset.gecko_id == "some updated gecko_id"
       assert asset.name == "some updated name"
       assert asset.ticker == "some updated ticker"
     end
@@ -64,7 +68,7 @@ defmodule Portfolio.AssetsTest do
 
     import Portfolio.AssetsFixtures
 
-    @invalid_attrs %{date: nil, price: nil}
+    @invalid_attrs %{currency: nil, date: nil, price: nil}
 
     test "list_prices/0 returns all prices" do
       price = price_fixture()
@@ -77,10 +81,11 @@ defmodule Portfolio.AssetsTest do
     end
 
     test "create_price/1 with valid data creates a price" do
-      valid_attrs = %{date: ~D[2022-11-17], price: 120.5}
+      valid_attrs = %{currency: "some currency", date: ~D[2022-12-05], price: 120.5}
 
       assert {:ok, %Price{} = price} = Assets.create_price(valid_attrs)
-      assert price.date == ~D[2022-11-17]
+      assert price.currency == "some currency"
+      assert price.date == ~D[2022-12-05]
       assert price.price == 120.5
     end
 
@@ -90,10 +95,11 @@ defmodule Portfolio.AssetsTest do
 
     test "update_price/2 with valid data updates the price" do
       price = price_fixture()
-      update_attrs = %{date: ~D[2022-11-18], price: 456.7}
+      update_attrs = %{currency: "some updated currency", date: ~D[2022-12-06], price: 456.7}
 
       assert {:ok, %Price{} = price} = Assets.update_price(price, update_attrs)
-      assert price.date == ~D[2022-11-18]
+      assert price.currency == "some updated currency"
+      assert price.date == ~D[2022-12-06]
       assert price.price == 456.7
     end
 

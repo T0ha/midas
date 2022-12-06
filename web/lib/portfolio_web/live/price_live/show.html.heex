@@ -1,31 +1,28 @@
-<h1>Show Price</h1>
+<.header>
+  Price <%= @price.id %>
+  <:subtitle>This is a price record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/prices/#{@price}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit price</.button>
+    </.link>
+  </:actions>
+</.header>
 
-<%= if @live_action in [:edit] do %>
-  <.modal return_to={Routes.price_show_path(@socket, :show, @price)}>
-    <.live_component
-      module={PortfolioWeb.PriceLive.FormComponent}
-      id={@price.id}
-      title={@page_title}
-      action={@live_action}
-      price={@price}
-      return_to={Routes.price_show_path(@socket, :show, @price)}
-    />
-  </.modal>
-<% end %>
+<.list>
+  <:item title="Date"><%= @price.date %></:item>
+  <:item title="Price"><%= @price.price %></:item>
+  <:item title="Currency"><%= @price.currency %></:item>
+</.list>
 
-<ul>
+<.back navigate={~p"/prices"}>Back to prices</.back>
 
-  <li>
-    <strong>Date:</strong>
-    <%= @price.date %>
-  </li>
-
-  <li>
-    <strong>Price:</strong>
-    <%= @price.price %>
-  </li>
-
-</ul>
-
-<span><%= live_patch "Edit", to: Routes.price_show_path(@socket, :edit, @price), class: "button" %></span> |
-<span><%= live_redirect "Back", to: Routes.price_index_path(@socket, :index) %></span>
+<.modal :if={@live_action == :edit} id="price-modal" show on_cancel={JS.patch(~p"/prices/#{@price}")}>
+  <.live_component
+    module={PortfolioWeb.PriceLive.FormComponent}
+    id={@price.id}
+    title={@page_title}
+    action={@live_action}
+    price={@price}
+    navigate={~p"/prices/#{@price}"}
+  />
+</.modal>

@@ -4,8 +4,8 @@ defmodule Portfolio.Wallets.Wallet do
 
   schema "wallets" do
     field :name, :string
-    field :subwallet, :string
-    field :type, :integer
+    field :type, Ecto.Enum, values: [:wallet, :exchange, :dex, :defi, :other]
+    field :parent_id, :id
 
     timestamps()
   end
@@ -13,7 +13,7 @@ defmodule Portfolio.Wallets.Wallet do
   @doc false
   def changeset(wallet, attrs) do
     wallet
-    |> cast(attrs, [:name, :subwallet, :type])
-    |> validate_required([:name, :subwallet, :type])
+    |> cast(attrs, [:name, :type])
+    |> validate_required([:name, :type])
   end
 end

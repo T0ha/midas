@@ -4,6 +4,35 @@ defmodule PortfolioWeb.AssetLive.FormComponent do
   alias Portfolio.Assets
 
   @impl true
+  def render(assigns) do
+    ~H"""
+    <div>
+      <.header>
+        <%= @title %>
+        <:subtitle>Use this form to manage asset records in your database.</:subtitle>
+      </.header>
+
+      <.simple_form
+        :let={f}
+        for={@changeset}
+        id="asset-form"
+        phx-target={@myself}
+        phx-change="validate"
+        phx-submit="save"
+      >
+        <.input field={{f, :name}} type="text" label="name" />
+        <.input field={{f, :ticker}} type="text" label="ticker" />
+        <.input field={{f, :gecko_id}} type="text" label="gecko_id" />
+        <.input field={{f, :fetch}} type="checkbox" label="fetch" />
+        <:actions>
+          <.button phx-disable-with="Saving...">Save Asset</.button>
+        </:actions>
+      </.simple_form>
+    </div>
+    """
+  end
+
+  @impl true
   def update(%{asset: asset} = assigns, socket) do
     changeset = Assets.change_asset(asset)
 
@@ -33,7 +62,7 @@ defmodule PortfolioWeb.AssetLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Asset updated successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+         |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
@@ -46,7 +75,7 @@ defmodule PortfolioWeb.AssetLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Asset created successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+         |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

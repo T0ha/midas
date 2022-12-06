@@ -4,6 +4,34 @@ defmodule PortfolioWeb.PriceLive.FormComponent do
   alias Portfolio.Assets
 
   @impl true
+  def render(assigns) do
+    ~H"""
+    <div>
+      <.header>
+        <%= @title %>
+        <:subtitle>Use this form to manage price records in your database.</:subtitle>
+      </.header>
+
+      <.simple_form
+        :let={f}
+        for={@changeset}
+        id="price-form"
+        phx-target={@myself}
+        phx-change="validate"
+        phx-submit="save"
+      >
+        <.input field={{f, :date}} type="date" label="date" />
+        <.input field={{f, :price}} type="number" label="price" step="any" />
+        <.input field={{f, :currency}} type="text" label="currency" />
+        <:actions>
+          <.button phx-disable-with="Saving...">Save Price</.button>
+        </:actions>
+      </.simple_form>
+    </div>
+    """
+  end
+
+  @impl true
   def update(%{price: price} = assigns, socket) do
     changeset = Assets.change_price(price)
 
@@ -33,7 +61,7 @@ defmodule PortfolioWeb.PriceLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Price updated successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+         |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
@@ -46,7 +74,7 @@ defmodule PortfolioWeb.PriceLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Price created successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+         |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

@@ -4,9 +4,9 @@ defmodule PortfolioWeb.WalletLiveTest do
   import Phoenix.LiveViewTest
   import Portfolio.WalletsFixtures
 
-  @create_attrs %{name: "some name", subwallet: "some subwallet", type: 42}
-  @update_attrs %{name: "some updated name", subwallet: "some updated subwallet", type: 43}
-  @invalid_attrs %{name: nil, subwallet: nil, type: nil}
+  @create_attrs %{name: "some name", type: :wallet}
+  @update_attrs %{name: "some updated name", type: :exchange}
+  @invalid_attrs %{name: nil, type: nil}
 
   defp create_wallet(_) do
     wallet = wallet_fixture()
@@ -17,19 +17,19 @@ defmodule PortfolioWeb.WalletLiveTest do
     setup [:create_wallet]
 
     test "lists all wallets", %{conn: conn, wallet: wallet} do
-      {:ok, _index_live, html} = live(conn, Routes.wallet_index_path(conn, :index))
+      {:ok, _index_live, html} = live(conn, ~p"/wallets")
 
       assert html =~ "Listing Wallets"
       assert html =~ wallet.name
     end
 
     test "saves new wallet", %{conn: conn} do
-      {:ok, index_live, _html} = live(conn, Routes.wallet_index_path(conn, :index))
+      {:ok, index_live, _html} = live(conn, ~p"/wallets")
 
       assert index_live |> element("a", "New Wallet") |> render_click() =~
                "New Wallet"
 
-      assert_patch(index_live, Routes.wallet_index_path(conn, :new))
+      assert_patch(index_live, ~p"/wallets/new")
 
       assert index_live
              |> form("#wallet-form", wallet: @invalid_attrs)
@@ -39,19 +39,19 @@ defmodule PortfolioWeb.WalletLiveTest do
         index_live
         |> form("#wallet-form", wallet: @create_attrs)
         |> render_submit()
-        |> follow_redirect(conn, Routes.wallet_index_path(conn, :index))
+        |> follow_redirect(conn, ~p"/wallets")
 
       assert html =~ "Wallet created successfully"
       assert html =~ "some name"
     end
 
     test "updates wallet in listing", %{conn: conn, wallet: wallet} do
-      {:ok, index_live, _html} = live(conn, Routes.wallet_index_path(conn, :index))
+      {:ok, index_live, _html} = live(conn, ~p"/wallets")
 
-      assert index_live |> element("#wallet-#{wallet.id} a", "Edit") |> render_click() =~
+      assert index_live |> element("#wallets-#{wallet.id} a", "Edit") |> render_click() =~
                "Edit Wallet"
 
-      assert_patch(index_live, Routes.wallet_index_path(conn, :edit, wallet))
+      assert_patch(index_live, ~p"/wallets/#{wallet}/edit")
 
       assert index_live
              |> form("#wallet-form", wallet: @invalid_attrs)
@@ -61,16 +61,16 @@ defmodule PortfolioWeb.WalletLiveTest do
         index_live
         |> form("#wallet-form", wallet: @update_attrs)
         |> render_submit()
-        |> follow_redirect(conn, Routes.wallet_index_path(conn, :index))
+        |> follow_redirect(conn, ~p"/wallets")
 
       assert html =~ "Wallet updated successfully"
       assert html =~ "some updated name"
     end
 
     test "deletes wallet in listing", %{conn: conn, wallet: wallet} do
-      {:ok, index_live, _html} = live(conn, Routes.wallet_index_path(conn, :index))
+      {:ok, index_live, _html} = live(conn, ~p"/wallets")
 
-      assert index_live |> element("#wallet-#{wallet.id} a", "Delete") |> render_click()
+      assert index_live |> element("#wallets-#{wallet.id} a", "Delete") |> render_click()
       refute has_element?(index_live, "#wallet-#{wallet.id}")
     end
   end
@@ -79,19 +79,19 @@ defmodule PortfolioWeb.WalletLiveTest do
     setup [:create_wallet]
 
     test "displays wallet", %{conn: conn, wallet: wallet} do
-      {:ok, _show_live, html} = live(conn, Routes.wallet_show_path(conn, :show, wallet))
+      {:ok, _show_live, html} = live(conn, ~p"/wallets/#{wallet}")
 
       assert html =~ "Show Wallet"
       assert html =~ wallet.name
     end
 
     test "updates wallet within modal", %{conn: conn, wallet: wallet} do
-      {:ok, show_live, _html} = live(conn, Routes.wallet_show_path(conn, :show, wallet))
+      {:ok, show_live, _html} = live(conn, ~p"/wallets/#{wallet}")
 
       assert show_live |> element("a", "Edit") |> render_click() =~
                "Edit Wallet"
 
-      assert_patch(show_live, Routes.wallet_show_path(conn, :edit, wallet))
+      assert_patch(show_live, ~p"/wallets/#{wallet}/show/edit")
 
       assert show_live
              |> form("#wallet-form", wallet: @invalid_attrs)
@@ -101,7 +101,7 @@ defmodule PortfolioWeb.WalletLiveTest do
         show_live
         |> form("#wallet-form", wallet: @update_attrs)
         |> render_submit()
-        |> follow_redirect(conn, Routes.wallet_show_path(conn, :show, wallet))
+        |> follow_redirect(conn, ~p"/wallets/#{wallet}")
 
       assert html =~ "Wallet updated successfully"
       assert html =~ "some updated name"

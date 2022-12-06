@@ -4,8 +4,9 @@ import Config
 config :portfolio, Portfolio.Repo,
   username: "postgres",
   password: "postgres",
-  database: "portfolio_dev",
   hostname: "localhost",
+  database: "portfolio_dev",
+  stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
@@ -22,10 +23,10 @@ config :portfolio, PortfolioWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "Cu0xZXPTik6uGrqcRkhqvXFe4dC/v+USVDWh9dOznAbvJHSoOH2yxOsCesBclrI4",
+  secret_key_base: "b6hbTU/rxFkqzCnmkFYBpyx6yGG7oQ0LjQagmhOdWkGsy9ZWT4DkXKi46QFCJ8n8",
   watchers: [
-    # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
-    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 
 # ## SSL Support
@@ -36,7 +37,6 @@ config :portfolio, PortfolioWeb.Endpoint,
 #
 #     mix phx.gen.cert
 #
-# Note that this task requires Erlang/OTP 20 or later.
 # Run `mix help phx.gen.cert` for more information.
 #
 # The `http:` config above can be replaced with:
@@ -63,6 +63,9 @@ config :portfolio, PortfolioWeb.Endpoint,
     ]
   ]
 
+# Enable dev routes for dashboard and mailbox
+config :portfolio, dev_routes: true
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
@@ -72,3 +75,6 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Disable swoosh api client as it is only required for production adapters.
+config :swoosh, :api_client, false

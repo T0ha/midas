@@ -4,6 +4,7 @@ defmodule Portfolio.Balances.Balance do
 
   schema "balances" do
     field :amount, :float
+    field :date, :date
     field :locked, :boolean, default: false
     field :unlock_datetime, :utc_datetime
     field :asset_id, :id
@@ -15,7 +16,7 @@ defmodule Portfolio.Balances.Balance do
   @doc false
   def changeset(balance, attrs) do
     balance
-    |> cast(attrs, [:amount, :locked, :unlock_datetime])
-    |> validate_required([:amount, :locked, :unlock_datetime])
+    |> cast(attrs, [:amount, :locked, :unlock_datetime, :date])
+    |> validate_required([:amount, :locked, :unlock_datetime, :date])
   end
 end

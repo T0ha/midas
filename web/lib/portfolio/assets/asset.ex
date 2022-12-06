@@ -3,17 +3,16 @@ defmodule Portfolio.Assets.Asset do
   import Ecto.Changeset
 
   schema "assets" do
+    field :fetch, :boolean, default: false
+    field :gecko_id, :string
     field :name, :string
     field :ticker, :string
-    field :fetch, :boolean
-
-    timestamps()
   end
 
   @doc false
   def changeset(asset, attrs) do
     asset
-    |> cast(attrs, [:name, :ticker, :fetch])
-    |> validate_required([:name, :ticker])
+    |> cast(attrs, [:name, :ticker, :gecko_id, :fetch])
+    |> validate_required([:name, :ticker, :gecko_id, :fetch])
   end
 end

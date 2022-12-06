@@ -7,7 +7,8 @@ defmodule PortfolioWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_portfolio_key",
-    signing_salt: "a+KnXQH6"
+    signing_salt: "ljvCoo+J",
+    same_site: "Lax"
   ]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
@@ -20,7 +21,7 @@ defmodule PortfolioWeb.Endpoint do
     at: "/",
     from: :portfolio,
     gzip: false,
-    only: ~w(assets fonts images favicon.ico robots.txt)
+    only: PortfolioWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

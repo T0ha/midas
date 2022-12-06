@@ -1,43 +1,42 @@
-<h1>Listing Balances</h1>
+<.header>
+  Listing Balances
+  <:actions>
+    <.link patch={~p"/balances/new"}>
+      <.button>New Balance</.button>
+    </.link>
+  </:actions>
+</.header>
 
-<%= if @live_action in [:new, :edit] do %>
-  <.modal return_to={Routes.balance_index_path(@socket, :index)}>
-    <.live_component
-      module={PortfolioWeb.BalanceLive.FormComponent}
-      id={@balance.id || :new}
-      title={@page_title}
-      action={@live_action}
-      balance={@balance}
-      return_to={Routes.balance_index_path(@socket, :index)}
-    />
-  </.modal>
-<% end %>
+<.table id="balances" rows={@balances} row_click={&JS.navigate(~p"/balances/#{&1}")}>
+  <:col :let={balance} label="Amount"><%= balance.amount %></:col>
+  <:col :let={balance} label="Locked"><%= balance.locked %></:col>
+  <:col :let={balance} label="Unlock datetime"><%= balance.unlock_datetime %></:col>
+  <:col :let={balance} label="Date"><%= balance.date %></:col>
+  <:action :let={balance}>
+    <div class="sr-only">
+      <.link navigate={~p"/balances/#{balance}"}>Show</.link>
+    </div>
+    <.link patch={~p"/balances/#{balance}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={balance}>
+    <.link phx-click={JS.push("delete", value: %{id: balance.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
 
-<table>
-  <thead>
-    <tr>
-      <th>Amount</th>
-      <th>Locked</th>
-      <th>Unlock datetime</th>
-
-      <th></th>
-    </tr>
-  </thead>
-  <tbody id="balances">
-    <%= for balance <- @balances do %>
-      <tr id={"balance-#{balance.id}"}>
-        <td><%= balance.amount %></td>
-        <td><%= balance.locked %></td>
-        <td><%= balance.unlock_datetime %></td>
-
-        <td>
-          <span><%= live_redirect "Show", to: Routes.balance_show_path(@socket, :show, balance) %></span>
-          <span><%= live_patch "Edit", to: Routes.balance_index_path(@socket, :edit, balance) %></span>
-          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: balance.id, data: [confirm: "Are you sure?"] %></span>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<span><%= live_patch "New Balance", to: Routes.balance_index_path(@socket, :new) %></span>
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="balance-modal"
+  show
+  on_cancel={JS.navigate(~p"/balances")}
+>
+  <.live_component
+    module={PortfolioWeb.BalanceLive.FormComponent}
+    id={@balance.id || :new}
+    title={@page_title}
+    action={@live_action}
+    balance={@balance}
+    navigate={~p"/balances"}
+  />
+</.modal>

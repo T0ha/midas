@@ -8,7 +8,7 @@ defmodule Portfolio.WalletsTest do
 
     import Portfolio.WalletsFixtures
 
-    @invalid_attrs %{name: nil, subwallet: nil, type: nil}
+    @invalid_attrs %{name: nil, type: nil}
 
     test "list_wallets/0 returns all wallets" do
       wallet = wallet_fixture()
@@ -21,12 +21,11 @@ defmodule Portfolio.WalletsTest do
     end
 
     test "create_wallet/1 with valid data creates a wallet" do
-      valid_attrs = %{name: "some name", subwallet: "some subwallet", type: 42}
+      valid_attrs = %{name: "some name", type: :wallet}
 
       assert {:ok, %Wallet{} = wallet} = Wallets.create_wallet(valid_attrs)
       assert wallet.name == "some name"
-      assert wallet.subwallet == "some subwallet"
-      assert wallet.type == 42
+      assert wallet.type == :wallet
     end
 
     test "create_wallet/1 with invalid data returns error changeset" do
@@ -35,12 +34,11 @@ defmodule Portfolio.WalletsTest do
 
     test "update_wallet/2 with valid data updates the wallet" do
       wallet = wallet_fixture()
-      update_attrs = %{name: "some updated name", subwallet: "some updated subwallet", type: 43}
+      update_attrs = %{name: "some updated name", type: :exchange}
 
       assert {:ok, %Wallet{} = wallet} = Wallets.update_wallet(wallet, update_attrs)
       assert wallet.name == "some updated name"
-      assert wallet.subwallet == "some updated subwallet"
-      assert wallet.type == 43
+      assert wallet.type == :exchange
     end
 
     test "update_wallet/2 with invalid data returns error changeset" do

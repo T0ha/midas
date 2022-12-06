@@ -8,12 +8,14 @@ defmodule Portfolio.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
-      Portfolio.Repo,
       # Start the Telemetry supervisor
       PortfolioWeb.Telemetry,
+      # Start the Ecto repository
+      Portfolio.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: Portfolio.PubSub},
+      # Start Finch
+      {Finch, name: Portfolio.Finch},
       # Start the Endpoint (http/https)
       PortfolioWeb.Endpoint
       # Start a worker by calling: Portfolio.Worker.start_link(arg)

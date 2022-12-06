@@ -4,6 +4,39 @@ defmodule PortfolioWeb.WalletLive.FormComponent do
   alias Portfolio.Wallets
 
   @impl true
+  def render(assigns) do
+    ~H"""
+    <div>
+      <.header>
+        <%= @title %>
+        <:subtitle>Use this form to manage wallet records in your database.</:subtitle>
+      </.header>
+
+      <.simple_form
+        :let={f}
+        for={@changeset}
+        id="wallet-form"
+        phx-target={@myself}
+        phx-change="validate"
+        phx-submit="save"
+      >
+        <.input field={{f, :name}} type="text" label="name" />
+        <.input
+          field={{f, :type}}
+          type="select"
+          label="type"
+          prompt="Choose a value"
+          options={Ecto.Enum.values(Portfolio.Wallets.Wallet, :type)}
+        />
+        <:actions>
+          <.button phx-disable-with="Saving...">Save Wallet</.button>
+        </:actions>
+      </.simple_form>
+    </div>
+    """
+  end
+
+  @impl true
   def update(%{wallet: wallet} = assigns, socket) do
     changeset = Wallets.change_wallet(wallet)
 
@@ -33,7 +66,7 @@ defmodule PortfolioWeb.WalletLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Wallet updated successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+         |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
@@ -46,7 +79,7 @@ defmodule PortfolioWeb.WalletLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Wallet created successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+         |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

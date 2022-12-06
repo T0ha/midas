@@ -1,36 +1,27 @@
-<h1>Show Wallet</h1>
+<.header>
+  Wallet <%= @wallet.id %>
+  <:subtitle>This is a wallet record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/wallets/#{@wallet}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit wallet</.button>
+    </.link>
+  </:actions>
+</.header>
 
-<%= if @live_action in [:edit] do %>
-  <.modal return_to={Routes.wallet_show_path(@socket, :show, @wallet)}>
-    <.live_component
-      module={PortfolioWeb.WalletLive.FormComponent}
-      id={@wallet.id}
-      title={@page_title}
-      action={@live_action}
-      wallet={@wallet}
-      return_to={Routes.wallet_show_path(@socket, :show, @wallet)}
-    />
-  </.modal>
-<% end %>
+<.list>
+  <:item title="Name"><%= @wallet.name %></:item>
+  <:item title="Type"><%= @wallet.type %></:item>
+</.list>
 
-<ul>
+<.back navigate={~p"/wallets"}>Back to wallets</.back>
 
-  <li>
-    <strong>Name:</strong>
-    <%= @wallet.name %>
-  </li>
-
-  <li>
-    <strong>Subwallet:</strong>
-    <%= @wallet.subwallet %>
-  </li>
-
-  <li>
-    <strong>Type:</strong>
-    <%= @wallet.type %>
-  </li>
-
-</ul>
-
-<span><%= live_patch "Edit", to: Routes.wallet_show_path(@socket, :edit, @wallet), class: "button" %></span> |
-<span><%= live_redirect "Back", to: Routes.wallet_index_path(@socket, :index) %></span>
+<.modal :if={@live_action == :edit} id="wallet-modal" show on_cancel={JS.patch(~p"/wallets/#{@wallet}")}>
+  <.live_component
+    module={PortfolioWeb.WalletLive.FormComponent}
+    id={@wallet.id}
+    title={@page_title}
+    action={@live_action}
+    wallet={@wallet}
+    navigate={~p"/wallets/#{@wallet}"}
+  />
+</.modal>

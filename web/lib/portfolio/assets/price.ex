@@ -1,14 +1,12 @@
 defmodule Portfolio.Assets.Price do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Portfolio.Assets.Asset
 
   schema "prices" do
+    field :currency, :string
     field :date, :date
     field :price, :float
-    field :currency, :string
-    belongs_to :asset, Asset
-
+    field :asset_id, :id
 
     timestamps()
   end
@@ -16,7 +14,7 @@ defmodule Portfolio.Assets.Price do
   @doc false
   def changeset(price, attrs) do
     price
-    |> cast(attrs, [:date, :price])
-    |> validate_required([:date, :price])
+    |> cast(attrs, [:date, :price, :currency])
+    |> validate_required([:date, :price, :currency])
   end
 end

@@ -8,7 +8,7 @@ defmodule Portfolio.BalancesTest do
 
     import Portfolio.BalancesFixtures
 
-    @invalid_attrs %{amount: nil, locked: nil, unlock_datetime: nil}
+    @invalid_attrs %{amount: nil, date: nil, locked: nil, unlock_datetime: nil}
 
     test "list_balances/0 returns all balances" do
       balance = balance_fixture()
@@ -21,12 +21,13 @@ defmodule Portfolio.BalancesTest do
     end
 
     test "create_balance/1 with valid data creates a balance" do
-      valid_attrs = %{amount: 120.5, locked: true, unlock_datetime: ~U[2022-11-17 13:27:00Z]}
+      valid_attrs = %{amount: 120.5, date: ~D[2022-12-05], locked: true, unlock_datetime: ~U[2022-12-05 11:28:00Z]}
 
       assert {:ok, %Balance{} = balance} = Balances.create_balance(valid_attrs)
       assert balance.amount == 120.5
+      assert balance.date == ~D[2022-12-05]
       assert balance.locked == true
-      assert balance.unlock_datetime == ~U[2022-11-17 13:27:00Z]
+      assert balance.unlock_datetime == ~U[2022-12-05 11:28:00Z]
     end
 
     test "create_balance/1 with invalid data returns error changeset" do
@@ -35,12 +36,13 @@ defmodule Portfolio.BalancesTest do
 
     test "update_balance/2 with valid data updates the balance" do
       balance = balance_fixture()
-      update_attrs = %{amount: 456.7, locked: false, unlock_datetime: ~U[2022-11-18 13:27:00Z]}
+      update_attrs = %{amount: 456.7, date: ~D[2022-12-06], locked: false, unlock_datetime: ~U[2022-12-06 11:28:00Z]}
 
       assert {:ok, %Balance{} = balance} = Balances.update_balance(balance, update_attrs)
       assert balance.amount == 456.7
+      assert balance.date == ~D[2022-12-06]
       assert balance.locked == false
-      assert balance.unlock_datetime == ~U[2022-11-18 13:27:00Z]
+      assert balance.unlock_datetime == ~U[2022-12-06 11:28:00Z]
     end
 
     test "update_balance/2 with invalid data returns error changeset" do

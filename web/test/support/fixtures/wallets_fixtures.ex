@@ -12,8 +12,7 @@ defmodule Portfolio.WalletsFixtures do
       attrs
       |> Enum.into(%{
         name: "some name",
-        subwallet: "some subwallet",
-        type: 42
+        type: :wallet
       })
       |> Portfolio.Wallets.create_wallet()
 

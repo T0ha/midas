@@ -12,8 +12,9 @@ defmodule Portfolio.BalancesFixtures do
       attrs
       |> Enum.into(%{
         amount: 120.5,
+        date: ~D[2022-12-05],
         locked: true,
-        unlock_datetime: ~U[2022-11-17 13:27:00Z]
+        unlock_datetime: ~U[2022-12-05 11:28:00Z]
       })
       |> Portfolio.Balances.create_balance()
 

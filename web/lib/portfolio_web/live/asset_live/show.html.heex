@@ -1,31 +1,29 @@
-<h1>Show Asset</h1>
+<.header>
+  Asset <%= @asset.id %>
+  <:subtitle>This is a asset record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/assets/#{@asset}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit asset</.button>
+    </.link>
+  </:actions>
+</.header>
 
-<%= if @live_action in [:edit] do %>
-  <.modal return_to={Routes.asset_show_path(@socket, :show, @asset)}>
-    <.live_component
-      module={PortfolioWeb.AssetLive.FormComponent}
-      id={@asset.id}
-      title={@page_title}
-      action={@live_action}
-      asset={@asset}
-      return_to={Routes.asset_show_path(@socket, :show, @asset)}
-    />
-  </.modal>
-<% end %>
+<.list>
+  <:item title="Name"><%= @asset.name %></:item>
+  <:item title="Ticker"><%= @asset.ticker %></:item>
+  <:item title="Gecko"><%= @asset.gecko_id %></:item>
+  <:item title="Fetch"><%= @asset.fetch %></:item>
+</.list>
 
-<ul>
+<.back navigate={~p"/assets"}>Back to assets</.back>
 
-  <li>
-    <strong>Name:</strong>
-    <%= @asset.name %>
-  </li>
-
-  <li>
-    <strong>Ticker:</strong>
-    <%= @asset.ticker %>
-  </li>
-
-</ul>
-
-<span><%= live_patch "Edit", to: Routes.asset_show_path(@socket, :edit, @asset), class: "button" %></span> |
-<span><%= live_redirect "Back", to: Routes.asset_index_path(@socket, :index) %></span>
+<.modal :if={@live_action == :edit} id="asset-modal" show on_cancel={JS.patch(~p"/assets/#{@asset}")}>
+  <.live_component
+    module={PortfolioWeb.AssetLive.FormComponent}
+    id={@asset.id}
+    title={@page_title}
+    action={@live_action}
+    asset={@asset}
+    navigate={~p"/assets/#{@asset}"}
+  />
+</.modal>

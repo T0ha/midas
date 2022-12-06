@@ -19,21 +19,20 @@ defmodule PortfolioWeb.ConnCase do
 
   using do
     quote do
+      # The default endpoint for testing
+      @endpoint PortfolioWeb.Endpoint
+
+      use PortfolioWeb, :verified_routes
+
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
       import PortfolioWeb.ConnCase
-
-      alias PortfolioWeb.Router.Helpers, as: Routes
-
-      # The default endpoint for testing
-      @endpoint PortfolioWeb.Endpoint
     end
   end
 
   setup tags do
-    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Portfolio.Repo, shared: not tags[:async])
-    on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
+    Portfolio.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 

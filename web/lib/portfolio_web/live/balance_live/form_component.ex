@@ -4,6 +4,35 @@ defmodule PortfolioWeb.BalanceLive.FormComponent do
   alias Portfolio.Balances
 
   @impl true
+  def render(assigns) do
+    ~H"""
+    <div>
+      <.header>
+        <%= @title %>
+        <:subtitle>Use this form to manage balance records in your database.</:subtitle>
+      </.header>
+
+      <.simple_form
+        :let={f}
+        for={@changeset}
+        id="balance-form"
+        phx-target={@myself}
+        phx-change="validate"
+        phx-submit="save"
+      >
+        <.input field={{f, :amount}} type="number" label="amount" step="any" />
+        <.input field={{f, :locked}} type="checkbox" label="locked" />
+        <.input field={{f, :unlock_datetime}} type="datetime-local" label="unlock_datetime" />
+        <.input field={{f, :date}} type="date" label="date" />
+        <:actions>
+          <.button phx-disable-with="Saving...">Save Balance</.button>
+        </:actions>
+      </.simple_form>
+    </div>
+    """
+  end
+
+  @impl true
   def update(%{balance: balance} = assigns, socket) do
     changeset = Balances.change_balance(balance)
 
@@ -33,7 +62,7 @@ defmodule PortfolioWeb.BalanceLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Balance updated successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+         |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
@@ -46,7 +75,7 @@ defmodule PortfolioWeb.BalanceLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Balance created successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+         |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

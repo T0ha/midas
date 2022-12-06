@@ -11,6 +11,8 @@ defmodule Portfolio.AssetsFixtures do
     {:ok, asset} =
       attrs
       |> Enum.into(%{
+        fetch: true,
+        gecko_id: "some gecko_id",
         name: "some name",
         ticker: "some ticker"
       })
@@ -26,7 +28,8 @@ defmodule Portfolio.AssetsFixtures do
     {:ok, price} =
       attrs
       |> Enum.into(%{
-        date: ~D[2022-11-17],
+        currency: "some currency",
+        date: ~D[2022-12-05],
         price: 120.5
       })
       |> Portfolio.Assets.create_price()
