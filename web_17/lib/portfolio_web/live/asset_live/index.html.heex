@@ -1,0 +1,42 @@
+<.header>
+  Listing Assets
+  <:actions>
+    <.link patch={~p"/assets/new"}>
+      <.button>New Asset</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="assets" rows={@assets} row_click={&JS.navigate(~p"/assets/#{&1}")}>
+  <:col :let={asset} label="Name"><%= asset.name %></:col>
+  <:col :let={asset} label="Ticker"><%= asset.ticker %></:col>
+  <:col :let={asset} label="Gecko"><%= asset.gecko_id %></:col>
+  <:col :let={asset} label="Fetch"><%= asset.fetch %></:col>
+  <:action :let={asset}>
+    <div class="sr-only">
+      <.link navigate={~p"/assets/#{asset}"}>Show</.link>
+    </div>
+    <.link patch={~p"/assets/#{asset}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={asset}>
+    <.link phx-click={JS.push("delete", value: %{id: asset.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="asset-modal"
+  show
+  on_cancel={JS.navigate(~p"/assets")}
+>
+  <.live_component
+    module={PortfolioWeb.AssetLive.FormComponent}
+    id={@asset.id || :new}
+    title={@page_title}
+    action={@live_action}
+    asset={@asset}
+    navigate={~p"/assets"}
+  />
+</.modal>

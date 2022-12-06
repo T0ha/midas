@@ -1,0 +1,27 @@
+<.header>
+  Wallet <%= @wallet.id %>
+  <:subtitle>This is a wallet record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/wallets/#{@wallet}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit wallet</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @wallet.name %></:item>
+  <:item title="Type"><%= @wallet.type %></:item>
+</.list>
+
+<.back navigate={~p"/wallets"}>Back to wallets</.back>
+
+<.modal :if={@live_action == :edit} id="wallet-modal" show on_cancel={JS.patch(~p"/wallets/#{@wallet}")}>
+  <.live_component
+    module={PortfolioWeb.WalletLive.FormComponent}
+    id={@wallet.id}
+    title={@page_title}
+    action={@live_action}
+    wallet={@wallet}
+    navigate={~p"/wallets/#{@wallet}"}
+  />
+</.modal>

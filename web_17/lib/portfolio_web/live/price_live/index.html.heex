@@ -1,0 +1,41 @@
+<.header>
+  Listing Prices
+  <:actions>
+    <.link patch={~p"/prices/new"}>
+      <.button>New Price</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="prices" rows={@prices} row_click={&JS.navigate(~p"/prices/#{&1}")}>
+  <:col :let={price} label="Date"><%= price.date %></:col>
+  <:col :let={price} label="Price"><%= price.price %></:col>
+  <:col :let={price} label="Currency"><%= price.currency %></:col>
+  <:action :let={price}>
+    <div class="sr-only">
+      <.link navigate={~p"/prices/#{price}"}>Show</.link>
+    </div>
+    <.link patch={~p"/prices/#{price}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={price}>
+    <.link phx-click={JS.push("delete", value: %{id: price.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="price-modal"
+  show
+  on_cancel={JS.navigate(~p"/prices")}
+>
+  <.live_component
+    module={PortfolioWeb.PriceLive.FormComponent}
+    id={@price.id || :new}
+    title={@page_title}
+    action={@live_action}
+    price={@price}
+    navigate={~p"/prices"}
+  />
+</.modal>

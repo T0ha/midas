@@ -1,0 +1,42 @@
+<.header>
+  Listing Balances
+  <:actions>
+    <.link patch={~p"/balances/new"}>
+      <.button>New Balance</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="balances" rows={@balances} row_click={&JS.navigate(~p"/balances/#{&1}")}>
+  <:col :let={balance} label="Amount"><%= balance.amount %></:col>
+  <:col :let={balance} label="Locked"><%= balance.locked %></:col>
+  <:col :let={balance} label="Unlock datetime"><%= balance.unlock_datetime %></:col>
+  <:col :let={balance} label="Date"><%= balance.date %></:col>
+  <:action :let={balance}>
+    <div class="sr-only">
+      <.link navigate={~p"/balances/#{balance}"}>Show</.link>
+    </div>
+    <.link patch={~p"/balances/#{balance}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={balance}>
+    <.link phx-click={JS.push("delete", value: %{id: balance.id})} data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="balance-modal"
+  show
+  on_cancel={JS.navigate(~p"/balances")}
+>
+  <.live_component
+    module={PortfolioWeb.BalanceLive.FormComponent}
+    id={@balance.id || :new}
+    title={@page_title}
+    action={@live_action}
+    balance={@balance}
+    navigate={~p"/balances"}
+  />
+</.modal>
