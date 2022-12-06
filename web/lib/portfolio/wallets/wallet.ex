@@ -4,7 +4,7 @@ defmodule Portfolio.Wallets.Wallet do
 
   schema "wallets" do
     field :name, :string
-    field :type, Ecto.Enum, values: [:wallet, :exchange, :dex, :defi, :other]
+    field :type, Ecto.Enum, values: [wallet: 1, exchange: 2, dex: 3, defi: 4, other: 5]
     field :parent_id, :id
 
     timestamps()
