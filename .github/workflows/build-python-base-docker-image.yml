@@ -1,4 +1,4 @@
-name: Build Docker Image
+name: Build Python Base Docker Image
 on:
   push:
     branches:
