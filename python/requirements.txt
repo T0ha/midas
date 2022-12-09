@@ -2,4 +2,4 @@ pycoingecko == 3.1.0
 binance-connector
 pandas == 1.5.1
 SQLAlchemy == 1.4.44
-
+psycopg2-binary == 2.9.5

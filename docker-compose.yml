@@ -16,6 +16,15 @@ services:
       interval: 1s
       timeout: 10s
       retries: 3
+  spider:
+    image: midas_spider
+      #container_name: postgres
+    env_file: .env
+    hostname: spider
+    volumes:
+      - ./python:/opt
+    networks:
+      - portfolio-network
 
 networks:
   portfolio-network:

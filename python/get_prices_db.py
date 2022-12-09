@@ -6,8 +6,19 @@ from pycoingecko import CoinGeckoAPI
 from sqlalchemy import create_engine
 import pandas as pd
 
+import os
+
+db_url = 'postgresql://{}:{}@{}:{}/{}'.format(
+    os.environ.get('POSTGRES_USER', 'postgres'),
+    os.environ.get('POSTGRES_PASSWORD', 'postgres'),
+    os.environ.get('POSTGRES_HOST', 'localhost'),
+    os.environ.get('POSTGRES_PORT', '5432'),
+    os.environ.get('POSTGRES_DB', 'portfolio_dev'),
+)
+
+engine = create_engine(db_url, echo=False)
+
 cg = CoinGeckoAPI()
-engine = create_engine('postgresql://postgres:postgres@localhost:5432/portfolio_dev', echo=False)
 
 def main():
     day = date.today()
