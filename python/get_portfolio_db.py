@@ -39,7 +39,7 @@ def main():
 
     free = portfolio_pd.loc[(portfolio_pd['free'] != 0)][['asset_id', 'free']]
     free.columns = ['asset_id', 'amount']
-    free = free.assign(date=day, wallet_id=2, locked=False, inserted_at=datetime.now(), updated_at=datetime.now())
+    free = free.assign(date=day, wallet_id=2, user_id=1, locked=False, inserted_at=datetime.now(), updated_at=datetime.now())
     
     
     #print(free)
@@ -47,7 +47,7 @@ def main():
     save_db('balances', free)
     locked = portfolio_pd.loc[(portfolio_pd['locked'] != 0)][['asset_id', 'locked']]
     locked.columns = ['asset_id', 'amount']
-    locked = locked.assign(date=day, wallet_id=2, locked=True, inserted_at=datetime.now(), updated_at=datetime.now())
+    locked = locked.assign(date=day, wallet_id=2, user_id=1, locked=True, inserted_at=datetime.now(), updated_at=datetime.now())
     
     #print(locked)
     
@@ -83,7 +83,7 @@ def to_df(data, coins):
 
 def add_fields(df, wallet_id, locked=False):
     df.columns = ['asset_id', 'amount']
-    return df.assign(date=date.today(), wallet_id=wallet_id, locked=locked, inserted_at=datetime.now(), updated_at=datetime.now())
+    return df.assign(date=date.today(), wallet_id=wallet_id, user_id=1, locked=locked, inserted_at=datetime.now(), updated_at=datetime.now())
 
 def save_db(table, df):
     try:
