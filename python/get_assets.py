@@ -4,6 +4,7 @@
 from pycoingecko import CoinGeckoAPI
 from sqlalchemy import create_engine
 import pandas as pd
+import os
 
 def main():
     cg = CoinGeckoAPI()
@@ -12,7 +13,17 @@ def main():
     data.columns = ['gecko_id', 'ticker', 'name']
         
     print(data)
-    engine = create_engine('postgresql://postgres:postgres@localhost:5432/portfolio_dev', echo=False)
+
+    db_url = 'postgresql://{}:{}@{}:{}/{}'.format(
+        os.environ.get('POSTGRES_USER', 'postgres'),
+        os.environ.get('POSTGRES_PASSWORD', 'postgres'),
+        os.environ.get('POSTGRES_HOST', 'localhost'),
+        os.environ.get('POSTGRES_PORT', '5432'),
+        os.environ.get('POSTGRES_DB', 'portfolio_dev'),
+    )
+
+    engine = create_engine(db_url, echo=False)
+
     with engine.begin() as connection:
         data.to_sql('assets', connection, if_exists='append', index_label='id')
 
