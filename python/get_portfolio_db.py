@@ -3,7 +3,6 @@
 
 from datetime import date, datetime
 
-from settings import API_KEY, SECRET
 from binance.spot import Spot as Client
 from sqlalchemy import create_engine
 import pandas as pd
@@ -20,8 +19,6 @@ db_url = 'postgresql://{}:{}@{}:{}/{}'.format(
 engine = create_engine(db_url, echo=False)
 
 def main():
-
-
     with engine.begin() as connection:
         coins = pd.read_sql_query("""SELECT id, ticker FROM assets WHERE "fetch" """, connection, index_col='ticker')
         print(coins)
