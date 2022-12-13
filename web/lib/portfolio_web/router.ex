@@ -97,6 +97,13 @@ defmodule PortfolioWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
+      live "/api_keys", ApiKeyLive.Index, :index
+      live "/api_keys/new", ApiKeyLive.Index, :new
+      live "/api_keys/:id/edit", ApiKeyLive.Index, :edit
+
+      live "/api_keys/:id", ApiKeyLive.Show, :show
+      live "/api_keys/:id/show/edit", ApiKeyLive.Show, :edit
+
     end
   end
 

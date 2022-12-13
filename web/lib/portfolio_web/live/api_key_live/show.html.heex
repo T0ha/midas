@@ -1,0 +1,27 @@
+<.header>
+  Api key <%= @api_key.id %>
+  <:subtitle>This is a api_key record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/api_keys/#{@api_key}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit api_key</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Key"><%= @api_key.key %></:item>
+  <:item title="Secret"><%= @api_key.secret %></:item>
+</.list>
+
+<.back navigate={~p"/api_keys"}>Back to api_keys</.back>
+
+<.modal :if={@live_action == :edit} id="api_key-modal" show on_cancel={JS.patch(~p"/api_keys/#{@api_key}")}>
+  <.live_component
+    module={PortfolioWeb.ApiKeyLive.FormComponent}
+    id={@api_key.id}
+    title={@page_title}
+    action={@live_action}
+    api_key={@api_key}
+    navigate={~p"/api_keys/#{@api_key}"}
+  />
+</.modal>

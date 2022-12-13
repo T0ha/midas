@@ -20,15 +20,21 @@ db_url = 'postgresql://{}:{}@{}:{}/{}'.format(
 engine = create_engine(db_url, echo=False)
 
 def main():
-    day = date.today()
 
 
     with engine.begin() as connection:
         coins = pd.read_sql_query("""SELECT id, ticker FROM assets WHERE "fetch" """, connection, index_col='ticker')
         print(coins)
-    coins.index = coins.index.map(str.upper)
 
-    client = Client(API_KEY, SECRET)
+        coins.index = coins.index.map(str.upper)
+        api_keys = pd.read_sql_query("""SELECT user_id, key, secret FROM api_keys WHERE wallet_id = 1""", connection)
+    for api_key in api_keys.iterrows():
+        fetch_for_user(api_key[1], coins)
+
+
+def fetch_for_user(api_key, coins):
+    day = date.today()
+    client = Client(api_key['key'], api_key['secret'])
 
     # Binance Spot
     portfolio = client.account()
@@ -39,7 +45,7 @@ def main():
 
     free = portfolio_pd.loc[(portfolio_pd['free'] != 0)][['asset_id', 'free']]
     free.columns = ['asset_id', 'amount']
-    free = free.assign(date=day, wallet_id=2, user_id=1, locked=False, inserted_at=datetime.now(), updated_at=datetime.now())
+    free = free.assign(date=day, wallet_id=2, user_id=api_key['user_id'], locked=False, inserted_at=datetime.now(), updated_at=datetime.now())
     
     
     #print(free)
@@ -47,7 +53,7 @@ def main():
     save_db('balances', free)
     locked = portfolio_pd.loc[(portfolio_pd['locked'] != 0)][['asset_id', 'locked']]
     locked.columns = ['asset_id', 'amount']
-    locked = locked.assign(date=day, wallet_id=2, user_id=1, locked=True, inserted_at=datetime.now(), updated_at=datetime.now())
+    locked = locked.assign(date=day, wallet_id=2, user_id=api_key['user_id'], locked=True, inserted_at=datetime.now(), updated_at=datetime.now())
     
     #print(locked)
     
@@ -59,7 +65,7 @@ def main():
     staking += client.staking_product_position("L_DEFI")
     #print(staking)
     df_staking = to_df(staking, coins)
-    df_staking = add_fields(df_staking[['asset_id', 'amount']], 3)
+    df_staking = add_fields(df_staking[['asset_id', 'amount']], 3, api_key['user_id'])
     print(df_staking)
     save_db('balances', df_staking)
 
@@ -67,8 +73,8 @@ def main():
     savings += client.savings_flexible_product_position()
     #print(savings)
     df_savings = to_df(savings, coins)
-    df_savings_locked = add_fields(df_savings.loc[(df_savings['freeAmount'] < df_savings['totalAmount'])][['asset_id', 'totalAmount']], 3, locked=True)
-    df_savings_free = add_fields(df_savings.loc[(df_savings['freeAmount'] == df_savings['totalAmount'])][['asset_id', 'totalAmount']], 3, locked=False)
+    df_savings_locked = add_fields(df_savings.loc[(df_savings['freeAmount'] < df_savings['totalAmount'])][['asset_id', 'totalAmount']], 3, api_key['user_id'], locked=True)
+    df_savings_free = add_fields(df_savings.loc[(df_savings['freeAmount'] == df_savings['totalAmount'])][['asset_id', 'totalAmount']], 3, api_key['user_id'], locked=False)
     print(df_savings)
     save_db('balances', df_savings_locked)
     save_db('balances', df_savings_free)
@@ -81,9 +87,9 @@ def to_df(data, coins):
     df = df.convert_dtypes({'id': 'int'})
     return df.rename({'id': 'asset_id'}, inplace=False, axis=1)
 
-def add_fields(df, wallet_id, locked=False):
+def add_fields(df, wallet_id, user_id, locked=False):
     df.columns = ['asset_id', 'amount']
-    return df.assign(date=date.today(), wallet_id=wallet_id, user_id=1, locked=locked, inserted_at=datetime.now(), updated_at=datetime.now())
+    return df.assign(date=date.today(), wallet_id=wallet_id, user_id=user_id, locked=locked, inserted_at=datetime.now(), updated_at=datetime.now())
 
 def save_db(table, df):
     try:
