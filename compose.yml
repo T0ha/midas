@@ -17,7 +17,7 @@ services:
       timeout: 10s
       retries: 3
   spider:
-    image: ghcr.io/t0ha/midas-python-base:latest
+    image: ghcr.io/t0ha/midas-spiders:latest
       #container_name: postgres
     env_file: .env
     hostname: spider
