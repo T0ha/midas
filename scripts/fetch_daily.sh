@@ -1,6 +1,7 @@
 #!/bin/sh
 
-PROJECT_PATH=/home/t0ha/midas
-echo ${PROJECT_PATH}
-python ${PROJECT_PATH}/python/get_prices_db.py
-python ${PROJECT_PATH}/python/get_portfolio_db.py
+COMPOSE_CONFIG="/home/t0ha/projects/midas/compose.yml"
+CMD="docker compose -f ${COMPOSE_CONFIG} run spider python"
+
+${CMD} get_prices_db.py
+${CMD} get_portfolio_db.py
