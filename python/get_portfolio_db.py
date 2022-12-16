@@ -20,18 +20,29 @@ engine = create_engine(db_url, echo=False)
 
 def main():
     with engine.begin() as connection:
-        coins = pd.read_sql_query("""SELECT id, ticker FROM assets WHERE "fetch" """, connection, index_col='ticker')
-        print(coins)
 
-        coins.index = coins.index.map(str.upper)
         api_keys = pd.read_sql_query("""SELECT user_id, key, secret FROM api_keys WHERE wallet_id = 1""", connection)
     for api_key in api_keys.iterrows():
-        fetch_for_user(api_key[1], coins)
+        fetch_for_user(api_key[1])
 
+def fetch_coins(client):
+    names = [c['name'] for c in client.coin_info() if c['trading'] ]
+    with engine.begin() as connection:
+        coins =  pd.read_sql_query(
+            """SELECT id, ticker FROM assets WHERE "name" in ('{}') """.format("','".join(names)),
+            connection,
+            index_col='ticker'
+        )
 
-def fetch_for_user(api_key, coins):
+    coins.index = coins.index.map(str.upper)
+    print(coins)
+    return coins
+
+def fetch_for_user(api_key):
     day = date.today()
     client = Client(api_key['key'], api_key['secret'])
+
+    coins = fetch_coins(client)
 
     # Binance Spot
     portfolio = client.account()
