@@ -6,7 +6,26 @@ defmodule Portfolio.Assets do
   import Ecto.Query, warn: false
   alias Portfolio.Repo
 
-  alias Portfolio.Assets.Asset
+  alias Portfolio.Assets.{Asset, Price}
+  alias Portfolio.Balances.Balance
+
+  @doc """
+  Returns the list of currencies..
+
+  ## Examples
+
+      iex> list_currencies()
+      [String.t(), ...]
+
+  """
+  def list_currencies do
+    from(
+      p in Price,
+      group_by: p.currency,
+      select: p.currency
+    )
+    |> Repo.all()
+  end
 
   @doc """
   Returns the list of assets.
@@ -19,6 +38,26 @@ defmodule Portfolio.Assets do
   """
   def list_assets do
     Repo.all(Asset)
+  end
+
+  @doc """
+  Returns the list of assets.
+
+  ## Examples
+
+      iex> list_user_assets(user_id)
+      [%Asset{}, ...]
+
+  """
+  def list_user_assets(user_id) do
+    Repo.all(
+      from a in Asset,
+        right_join: b in Balance, on: b.asset_id == a.id, 
+        where: b.user_id == ^user_id,
+        group_by: a.id,
+        order_by: a.id,
+        select: a
+    )
   end
 
   @doc """
@@ -102,19 +141,27 @@ defmodule Portfolio.Assets do
     Asset.changeset(asset, attrs)
   end
 
-  alias Portfolio.Assets.Price
 
   @doc """
   Returns the list of prices.
 
   ## Examples
 
-      iex> list_prices()
+      iex> list_prices(currency)
       [%Price{}, ...]
 
   """
-  def list_prices do
-    Repo.all(Price)
+  def list_prices(currency \\ "usd", asset_ids \\ []) do
+    from(
+      p in Price,
+      where: p.currency == ^currency 
+        and (  ^(asset_ids == []) or
+          p.asset_id in ^asset_ids
+        ),
+      order_by: [p.date, p.asset_id]
+    )
+    |> Repo.all()
+    |> Repo.preload(:asset)
   end
 
   @doc """

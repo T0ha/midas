@@ -6,7 +6,13 @@ defmodule PortfolioWeb.PriceLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :prices, list_prices())}
+    assets = Assets.list_user_assets(1)
+    {:ok,
+      socket
+      |> assign(:assets, assets)
+      |> assign(:currencies, Assets.list_currencies())
+      |> assign(:prices, list_prices(socket.assigns['currency'], Enum.map(assets, & &1.id)))
+    }
   end
 
   @impl true
@@ -14,33 +20,26 @@ defmodule PortfolioWeb.PriceLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  defp apply_action(socket, :edit, %{"id" => id}) do
-    socket
-    |> assign(:page_title, "Edit Price")
-    |> assign(:price, Assets.get_price!(id))
-  end
-
-  defp apply_action(socket, :new, _params) do
-    socket
-    |> assign(:page_title, "New Price")
-    |> assign(:price, %Price{})
-  end
-
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Prices")
+    |> assign(:page_title, "Prices")
     |> assign(:price, nil)
   end
 
   @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    price = Assets.get_price!(id)
-    {:ok, _} = Assets.delete_price(price)
+  def handle_event("change_currency", %{"currency" => currency}, socket) do
+    {:noreply,
+      socket
+      |> assign(:currency, currency)
+      |> assign(:prices, list_prices(currency, Enum.map(socket.assigns.assets, & &1.id)))
+    }
+    end
 
-    {:noreply, assign(socket, :prices, list_prices())}
-  end
-
-  defp list_prices do
-    Assets.list_prices()
+  defp list_prices(currency \\ "usd", assets \\ [])
+  defp list_prices(nil, assets), do: list_prices("usd", assets)
+  defp list_prices(currency, assets) do
+    currency
+    |> Assets.list_prices(assets)
+    |> Enum.chunk_by(& &1.date)
   end
 end
