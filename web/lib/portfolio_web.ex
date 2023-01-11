@@ -86,6 +86,7 @@ defmodule PortfolioWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import PortfolioWeb.CoreComponents
+      import PortfolioWeb.TableComponents
       import PortfolioWeb.Gettext
 
       # Shortcut for generating JS commands

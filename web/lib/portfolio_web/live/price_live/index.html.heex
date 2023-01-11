@@ -12,38 +12,16 @@
     
 </.header>
 
-    <div id="prices" class="overflow-y-auto px-4 sm:overflow-visible sm:px-0">
-      <table class="mt-11 w-[40rem] sm:w-full">
-        <thead class="text-left text-[0.8125rem] leading-6 text-zinc-500">
-          <tr>
-            <th class="p-0 pb-4 pr-6 font-normal">Date</th>
-            <th :for={col <- @assets} class="p-0 pb-4 pr-6 font-normal">
-              <%= col.ticker %>
-            </th>
-          </tr>
-        </thead>
 
-    <tbody class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700">
-      <%= for date_prices <- @prices do %>
-      <tr
-        id={"price-#{Phoenix.Param.to_param(hd(date_prices))}"}
-        class="relative group hover:bg-zinc-50"
-        >
-        <td><%= (date_prices |> hd()).date %></td>
-          <%= for asset <- @assets do %>
-          <td>
-            <%= if Enum.any?(date_prices, & &1.asset_id == asset.id) do %>
-              <%= Enum.find(date_prices, & &1.asset_id == asset.id).price %>
-            <% else %>
-              ND
-            <% end %>
-          </td>
-          <% end %>
-      </tr>
-      <% end %>
-    </tbody>
-      </table>
-    </div>
+<.table_2d id="prices1" cols={@assets} rows={@prices} col_field={:asset_id}
+  group_field={:date}>
+  <:col_header :let={asset} > 
+    <%= asset.ticker %>
+  </:col_header>
+  <:col_data :let={price} > 
+    <%= price.price %>
+  </:col_data>
+</.table_2d>
 
 <.modal
   :if={@live_action in [:new, :edit]}

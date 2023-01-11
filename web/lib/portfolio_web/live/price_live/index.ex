@@ -2,7 +2,6 @@ defmodule PortfolioWeb.PriceLive.Index do
   use PortfolioWeb, :live_view
 
   alias Portfolio.Assets
-  alias Portfolio.Assets.Price
 
   @impl true
   def mount(_params, _session, socket) do
@@ -40,6 +39,5 @@ defmodule PortfolioWeb.PriceLive.Index do
   defp list_prices(currency, assets) do
     currency
     |> Assets.list_prices(assets)
-    |> Enum.chunk_by(& &1.date)
   end
 end
