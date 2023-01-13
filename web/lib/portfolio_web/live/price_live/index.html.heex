@@ -6,6 +6,7 @@
     id="currency" 
     type="select"
     name="currency"
+    value={@currency}
     options={@currencies}
     />
   </.simple_form>
@@ -19,7 +20,7 @@
     <%= asset.ticker %>
   </:col_header>
   <:col_data :let={price} > 
-    <%= price.price %>
+    <%= Float.floor(price.price, 4) %>
   </:col_data>
 </.table_2d>
 

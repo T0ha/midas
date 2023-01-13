@@ -9,6 +9,7 @@ defmodule PortfolioWeb.PriceLive.Index do
     {:ok,
       socket
       |> assign(:assets, assets)
+      |> assign(:currency, "usd")
       |> assign(:currencies, Assets.list_currencies())
       |> assign(:prices, list_prices(socket.assigns['currency'], Enum.map(assets, & &1.id)))
     }
