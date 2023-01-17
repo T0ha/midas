@@ -2,16 +2,13 @@ defmodule PortfolioWeb.PriceLive.Index do
   use PortfolioWeb, :live_view
 
   alias Portfolio.Assets
+  alias PortfolioWeb.AssignCurrency
 
   @impl true
   def mount(_params, _session, socket) do
-    assets = Assets.list_user_assets(1)
     {:ok,
       socket
-      |> assign(:assets, assets)
-      |> assign(:currency, "usd")
-      |> assign(:currencies, Assets.list_currencies())
-      |> assign(:prices, list_prices(socket.assigns['currency'], Enum.map(assets, & &1.id)))
+      |> assign(:prices, list_prices(socket.assigns['currency'], socket.assigns.current_user_assets))
     }
   end
 
@@ -27,11 +24,11 @@ defmodule PortfolioWeb.PriceLive.Index do
   end
 
   @impl true
-  def handle_event("change_currency", %{"currency" => currency}, socket) do
+  def handle_event("change_currency", %{"currency" => currency} = params, socket) do
     {:noreply,
       socket
-      |> assign(:currency, currency)
-      |> assign(:prices, list_prices(currency, Enum.map(socket.assigns.assets, & &1.id)))
+      |> AssignCurrency.change_currency(params)
+      |> assign(:prices, list_prices(currency, socket.assigns.current_user_assets))
     }
     end
 

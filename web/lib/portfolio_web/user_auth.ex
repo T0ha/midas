@@ -5,6 +5,7 @@ defmodule PortfolioWeb.UserAuth do
   import Phoenix.Controller
 
   alias Portfolio.Accounts
+  alias Portfolio.Assets
 
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
@@ -175,9 +176,11 @@ defmodule PortfolioWeb.UserAuth do
   defp mount_current_user(session, socket) do
     case session do
       %{"user_token" => user_token} ->
-        Phoenix.Component.assign_new(socket, :current_user, fn ->
+        socket
+        |> Phoenix.Component.assign_new(:current_user, fn ->
           Accounts.get_user_by_session_token(user_token)
         end)
+      |> update_user_assets()
 
       %{} ->
         Phoenix.Component.assign_new(socket, :current_user, fn -> nil end)
@@ -228,4 +231,12 @@ defmodule PortfolioWeb.UserAuth do
   defp maybe_store_return_to(conn), do: conn
 
   defp signed_in_path(_conn), do: ~p"/"
+
+  defp update_user_assets(socket) do
+    assets = 
+      socket.assigns.current_user.id
+      |> Assets.list_user_assets()
+
+    Phoenix.Component.assign(socket, :current_user_assets, assets)
+  end
 end

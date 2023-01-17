@@ -1,20 +1,9 @@
 <.header>
   Prices
-  <.simple_form :let={f} for={:currency} phx-change="change_currency">
-    <.input
-    field={{f, :currency}}
-    id="currency" 
-    type="select"
-    name="currency"
-    value={@currency}
-    options={@currencies}
-    />
-  </.simple_form>
-    
 </.header>
 
 
-<.table_2d id="prices1" cols={@assets} rows={@prices} col_field={:asset_id}
+<.table_2d id="prices1" cols={@current_user_assets} rows={@prices} col_field={:asset_id}
   group_field={:date}>
   <:col_header :let={asset} > 
     <%= asset.ticker %>

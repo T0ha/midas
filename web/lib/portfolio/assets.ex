@@ -151,7 +151,12 @@ defmodule Portfolio.Assets do
       [%Price{}, ...]
 
   """
-  def list_prices(currency \\ "usd", asset_ids \\ []) do
+  def list_prices(currency \\ "usd", assets \\ [])
+
+  def list_prices(currency, [%Asset{} | _] = assets), do: 
+    list_prices(currency, Enum.map(assets, & &1.id))
+
+  def list_prices(currency, asset_ids) do
     from(
       p in Price,
       where: p.currency == ^currency 
