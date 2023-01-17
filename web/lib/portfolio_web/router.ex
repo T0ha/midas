@@ -22,33 +22,32 @@ defmodule PortfolioWeb.Router do
 
     get "/", PageController, :home
 
-      live "/assets", AssetLive.Index, :index
-      live "/assets/new", AssetLive.Index, :new
-      live "/assets/:id/edit", AssetLive.Index, :edit
+    live "/assets", AssetLive.Index, :index
+    live "/assets/new", AssetLive.Index, :new
+    live "/assets/:id/edit", AssetLive.Index, :edit
 
-      live "/assets/:id", AssetLive.Show, :show
-      live "/assets/:id/show/edit", AssetLive.Show, :edit
+    live "/assets/:id", AssetLive.Show, :show
+    live "/assets/:id/show/edit", AssetLive.Show, :edit
 
-      live "/balances", BalanceLive.Index, :index
-      live "/balances/new", BalanceLive.Index, :new
-      live "/balances/:id/edit", BalanceLive.Index, :edit
+    live "/balances", BalanceLive.Index, :index
+    live "/balances/new", BalanceLive.Index, :new
+    live "/balances/:id/edit", BalanceLive.Index, :edit
 
-      live "/balances/:id", BalanceLive.Show, :show
-      live "/balances/:id/show/edit", BalanceLive.Show, :edit
+    live "/balances/:id", BalanceLive.Show, :show
+    live "/balances/:id/show/edit", BalanceLive.Show, :edit
 
-      live "/prices", PriceLive.Index, :index
-      live "/prices/new", PriceLive.Index, :new
-      live "/prices/:id/edit", PriceLive.Index, :edit
+    live "/prices/new", PriceLive.Index, :new
+    live "/prices/:id/edit", PriceLive.Index, :edit
 
-      live "/prices/:id", PriceLive.Show, :show
-      live "/prices/:id/show/edit", PriceLive.Show, :edit
+    live "/prices/:id", PriceLive.Show, :show
+    live "/prices/:id/show/edit", PriceLive.Show, :edit
 
-      live "/wallets", WalletLive.Index, :index
-      live "/wallets/new", WalletLive.Index, :new
-      live "/wallets/:id/edit", WalletLive.Index, :edit
+    live "/wallets", WalletLive.Index, :index
+    live "/wallets/new", WalletLive.Index, :new
+    live "/wallets/:id/edit", WalletLive.Index, :edit
 
-      live "/wallets/:id", WalletLive.Show, :show
-      live "/wallets/:id/show/edit", WalletLive.Show, :edit
+    live "/wallets/:id", WalletLive.Show, :show
+    live "/wallets/:id/show/edit", WalletLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.
@@ -79,7 +78,7 @@ defmodule PortfolioWeb.Router do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
     live_session :redirect_if_user_is_authenticated,
-      on_mount: [{PortfolioWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      on_mount: [PortfolioWeb.AssignCurrency, {PortfolioWeb.UserAuth, :redirect_if_user_is_authenticated}] do
       live "/users/register", UserRegistrationLive, :new
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
@@ -93,7 +92,7 @@ defmodule PortfolioWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
-      on_mount: [{PortfolioWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [PortfolioWeb.AssignCurrency, {PortfolioWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
@@ -113,7 +112,8 @@ defmodule PortfolioWeb.Router do
     delete "/users/log_out", UserSessionController, :delete
 
     live_session :current_user,
-      on_mount: [{PortfolioWeb.UserAuth, :mount_current_user}] do
+      on_mount: [{PortfolioWeb.UserAuth, :mount_current_user}, PortfolioWeb.AssignCurrency] do
+      live "/prices", PriceLive.Index, :index
       live "/users/confirm/:token", UserConfirmationLive, :edit
       live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
