@@ -6,6 +6,7 @@ defmodule Portfolio.Balances do
   import Ecto.Query, warn: false
   alias Portfolio.Repo
 
+  alias Portfolio.Accounts.User
   alias Portfolio.Balances.Balance
 
   @doc """
@@ -19,6 +20,29 @@ defmodule Portfolio.Balances do
   """
   def list_balances do
     Repo.all(Balance)
+  end
+
+  @doc """
+  Returns the list of balances.
+
+  ## Examples
+
+      iex> list_balances_for_user(1, "usd")
+      [%Balance{}, ...]
+
+  """
+  def list_balances_for_user(%User{id: id}), do: 
+      list_balances_for_user(id)
+
+  def list_balances_for_user(user_id) do
+    from(b in Balance, 
+      join: a in assoc(b, :asset),
+      where: b.user_id == ^user_id,
+      order_by: [asc: b.date, asc: b.asset_id],
+      group_by: [b.date, b.asset_id, a.ticker],
+      select: %{date: b.date, asset_id: b.asset_id, asset: a.ticker, amount: sum(b.amount)}
+    )
+    |> Repo.all()
   end
 
   @doc """

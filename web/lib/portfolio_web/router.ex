@@ -29,12 +29,6 @@ defmodule PortfolioWeb.Router do
     live "/assets/:id", AssetLive.Show, :show
     live "/assets/:id/show/edit", AssetLive.Show, :edit
 
-    live "/balances", BalanceLive.Index, :index
-    live "/balances/new", BalanceLive.Index, :new
-    live "/balances/:id/edit", BalanceLive.Index, :edit
-
-    live "/balances/:id", BalanceLive.Show, :show
-    live "/balances/:id/show/edit", BalanceLive.Show, :edit
 
     live "/prices/new", PriceLive.Index, :new
     live "/prices/:id/edit", PriceLive.Index, :edit
@@ -103,6 +97,10 @@ defmodule PortfolioWeb.Router do
       live "/api_keys/:id", ApiKeyLive.Show, :show
       live "/api_keys/:id/show/edit", ApiKeyLive.Show, :edit
 
+    live "/balances", BalanceLive.Index, :index
+
+    live "/balances/:id", BalanceLive.Show, :show
+    live "/balances/:id/show/edit", BalanceLive.Show, :edit
     end
   end
 
