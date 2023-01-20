@@ -9,7 +9,12 @@
     <%= asset.ticker %>
   </:col_header>
   <:col_data :let={price} > 
-    <%= Float.floor(price.price, 4) %>
+    <span class="text-green-700" :if={price.delta > 0.0}>
+    <%= Float.floor(price.price, 4) %> ( <%= Float.floor(price.delta || 100.0, 4) %>% )
+    </span>
+    <span class="text-red-500" :if={price.delta < 0.0}>
+    <%= Float.floor(price.price, 4) %> ( <%= Float.floor(price.delta || 100.0, 4) %>% )
+    </span>
   </:col_data>
 </.table_2d>
 

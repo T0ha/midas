@@ -159,14 +159,23 @@ defmodule Portfolio.Assets do
   def list_prices(currency, asset_ids) do
     from(
       p in Price,
+      left_join: po in Price,
+        on: p.asset_id == po.asset_id 
+          and po.date == date_add(p.date, -1, "day")
+          and p.currency == po.currency,
       where: p.currency == ^currency 
         and (  ^(asset_ids == []) or
           p.asset_id in ^asset_ids
         ),
-      order_by: [p.date, p.asset_id]
+      order_by: [p.date, p.asset_id],
+      select: %{
+        date: p.date, 
+        asset_id: p.asset_id,
+        price: p.price,
+        delta: (p.price - po.price) / po.price * 100.0
+      }
     )
     |> Repo.all()
-    |> Repo.preload(:asset)
   end
 
   @doc """
