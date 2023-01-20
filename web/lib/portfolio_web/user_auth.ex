@@ -180,7 +180,7 @@ defmodule PortfolioWeb.UserAuth do
         |> Phoenix.Component.assign_new(:current_user, fn ->
           Accounts.get_user_by_session_token(user_token)
         end)
-      |> update_user_assets()
+        |> update_user_assets()
 
       %{} ->
         Phoenix.Component.assign_new(socket, :current_user, fn -> nil end)

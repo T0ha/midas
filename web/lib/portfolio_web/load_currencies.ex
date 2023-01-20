@@ -1,8 +1,6 @@
 defmodule PortfolioWeb.AssignCurrency do
   use PortfolioWeb, :verified_routes
 
-  import Plug.Conn
-  import Phoenix.Controller
 
   alias Portfolio.Assets
 
