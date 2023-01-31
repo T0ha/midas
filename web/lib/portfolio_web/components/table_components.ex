@@ -53,7 +53,7 @@ defmodule PortfolioWeb.TableComponents do
             <th class="p-0 pb-4 pr-6 font-normal">
               <%= render_slot(@group_header) || "Date" %>
             </th>
-            <th :for={col <- @cols} class="p-0 pb-4 pr-6 font-normal">
+            <th :for={col <- @cols} class="p-0 pb-4 pr-6 font-normal p-2 text-center">
               <%= render_slot(@col_header, col) %>
               </th>
               </tr>
@@ -65,11 +65,11 @@ defmodule PortfolioWeb.TableComponents do
               id={"#{@id}-#{Map.get(hd(row), @group_field)}"}
               class="relative group hover:bg-zinc-50"
               >
-              <td>
+              <td class="p-2">
                 <%= render_slot(@group_data, hd(row)) || (row |> hd()).date %>
               </td>
               <%= for col <- @cols do %>
-              <td>
+              <td class="p-2 text-center">
               <%= if Enum.any?(row, & Map.get(&1, @col_field) == col.id) do %>
               <%= render_slot(@col_data, Enum.find(row, & Map.get(&1, @col_field) == col.id)) %>
               <% else %>

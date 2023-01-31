@@ -13,8 +13,12 @@
         MIDAS
       </p>
     </div>
-    <div class="flex items-center gap-4">
-      <.simple_form :let={f} for={:currency} phx-change="change_currency">
+    <div class="flex w-20 items-right gap-4">
+      <.simple_form :let={f} 
+        for={:currency} 
+        phx-change="change_currency"
+        class="w-full"
+        >
         <.input
           field={{f, :currency}}
           id="currency" 
@@ -47,7 +51,7 @@
     </ul>
   </div>
 </header>
-<main class="px-4 py-20 sm:px-6 lg:px-8">
+<main class="px-0 py-0">
   <div class="mx-auto max-w-full">
     <.flash kind={:info} title="Success!" flash={@flash} />
     <.flash kind={:error} title="Error!" flash={@flash} />
@@ -62,6 +66,20 @@
     >
       Attempting to reconnect <Heroicons.arrow_path class="ml-1 w-3 h-3 inline animate-spin" />
     </.flash>
-    <%= @inner_content %>
+    <div class="w-full flex">
+      <div class="w-64 min-h-screen p-4 flex-none bg-slate-100 text-slate-600">
+        <ul>
+          <li>
+            <.link href={~p"/prices"}>Prices history</.link>
+          </li>
+          <li>
+            <.link href={~p"/balances"}>Portfolio history</.link>
+          </li>
+        </ul>
+      </div>
+      <div class="flex-1 p-4 sm:px-6 lg:px-8">
+        <%= @inner_content %>
+      </div>
+    </div>
   </div>
 </main>
