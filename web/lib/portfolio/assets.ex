@@ -167,7 +167,7 @@ defmodule Portfolio.Assets do
         and (  ^(asset_ids == []) or
           p.asset_id in ^asset_ids
         ),
-      order_by: [p.date, p.asset_id],
+      order_by: [desc: p.date, asc: p.asset_id],
       select: %{
         date: p.date, 
         asset_id: p.asset_id,

@@ -1,5 +1,5 @@
 <.header>
-  Listing Balances
+  Portfolio history
 </.header>
 
 <.table_2d id="balances" cols={@current_user_assets} rows={@balances} col_field={:asset_id}
@@ -7,8 +7,15 @@
   <:col_header :let={asset} > 
     <%= asset.ticker %>
   </:col_header>
-  <:col_data :let={price} > 
-    <%= Float.floor(price.amount, 4) %>
+  <:col_data :let={balance} > 
+    <%= Float.floor(balance.amount, 4) %><br/>
+      <%= Float.floor(balance.value || 0.0, 2) %> USD <br/>
+    <span class="text-green-700" :if={balance.delta > 0.0}>
+      ( <%= Float.floor(balance.delta || 100.0, 2) %>%)
+    </span>
+    <span class="text-red-500" :if={balance.delta < 0.0}>
+      ( <%= Float.floor(balance.delta || 100.0, 2) %>%)
+    </span>
   </:col_data>
 </.table_2d>
 

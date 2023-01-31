@@ -8,6 +8,7 @@ defmodule Portfolio.Balances do
 
   alias Portfolio.Accounts.User
   alias Portfolio.Balances.Balance
+  alias Portfolio.Assets.Price
 
   @doc """
   Returns the list of balances.
@@ -37,10 +38,25 @@ defmodule Portfolio.Balances do
   def list_balances_for_user(user_id) do
     from(b in Balance, 
       join: a in assoc(b, :asset),
+      left_join: bo in Balance,
+      on: b.asset_id == bo.asset_id
+        and b.date == date_add(bo.date, 1, "day"),
+      left_join: p in Price,
+      on: p.date == b.date 
+        and p.currency == "usd"
+        and p.asset_id == b.asset_id,
       where: b.user_id == ^user_id,
-      order_by: [asc: b.date, asc: b.asset_id],
-      group_by: [b.date, b.asset_id, a.ticker],
-      select: %{date: b.date, asset_id: b.asset_id, asset: a.ticker, amount: sum(b.amount)}
+      order_by: [desc: b.date, asc: b.asset_id],
+      group_by: [b.date, b.asset_id, a.ticker, p.price],
+      select: %{
+        date: b.date,
+        asset_id: b.asset_id,
+        asset: a.ticker,
+        amount: sum(b.amount),
+        delta: (sum(b.amount) - sum(bo.amount)) / sum(bo.amount) * 100.0,
+        price: p.price,
+        value: sum(b.amount) * p.price
+      }
     )
     |> Repo.all()
   end

@@ -234,8 +234,12 @@ defmodule PortfolioWeb.UserAuth do
 
   defp update_user_assets(socket) do
     assets = 
-      socket.assigns.current_user.id
-      |> Assets.list_user_assets()
+      if :current_user in socket.assigns do
+        socket.assigns.current_user.id
+        |> Assets.list_user_assets()
+      else
+        Assets.list_user_assets(1)
+      end
 
     Phoenix.Component.assign(socket, :current_user_assets, assets)
   end
