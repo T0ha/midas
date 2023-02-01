@@ -37,6 +37,9 @@ defmodule PortfolioWeb.TableComponents do
   slot :group_header
   slot :group_data
 
+  slot :total_header
+  slot :total
+
 
   #slot :action, doc: "the slot for showing user actions in the last table column"
 
@@ -53,6 +56,9 @@ defmodule PortfolioWeb.TableComponents do
             <th class="p-0 pb-4 pr-6 font-normal">
               <%= render_slot(@group_header) || "Date" %>
             </th>
+            <th :if={@total != []} class="p-0 pb-4 pr-6 font-normal">
+              <%= render_slot(@total_header) || "Total" %>
+            </th>
             <th :for={col <- @cols} class="p-0 pb-4 pr-6 font-normal p-2 text-center">
               <%= render_slot(@col_header, col) %>
               </th>
@@ -67,6 +73,9 @@ defmodule PortfolioWeb.TableComponents do
               >
               <td class="p-2">
                 <%= render_slot(@group_data, hd(row)) || (row |> hd()).date %>
+              </td>
+              <td :if={@total != []} class="p-2">
+                <%= render_slot(@total, row) %>
               </td>
               <%= for col <- @cols do %>
               <td class="p-2 text-center">
