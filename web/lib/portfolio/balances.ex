@@ -40,14 +40,19 @@ defmodule Portfolio.Balances do
       join: a in assoc(b, :asset),
       left_join: bo in Balance,
       on: b.asset_id == bo.asset_id
-        and b.date == date_add(bo.date, 1, "day"),
+        and b.date == date_add(bo.date, 1, "day")
+        and b.wallet_id == bo.wallet_id,
       left_join: p in Price,
       on: p.date == b.date 
         and p.currency == "usd"
         and p.asset_id == b.asset_id,
+      left_join: po in Price,
+      on: po.date == bo.date 
+        and po.currency == "usd"
+        and po.asset_id == b.asset_id,
       where: b.user_id == ^user_id,
       order_by: [desc: b.date, asc: b.asset_id],
-      group_by: [b.date, b.asset_id, a.ticker, p.price],
+      group_by: [b.date, b.asset_id, a.ticker, p.price, po.price],
       select: %{
         date: b.date,
         asset_id: b.asset_id,
@@ -55,7 +60,9 @@ defmodule Portfolio.Balances do
         amount: sum(b.amount),
         delta: (sum(b.amount) - sum(bo.amount)) / sum(bo.amount) * 100.0,
         price: p.price,
-        value: sum(b.amount) * p.price
+        value: sum(b.amount) * p.price,
+        delta_value: (sum(b.amount) * p.price - sum(bo.amount) * po.price) / (sum(bo.amount) * po.price) * 100.0
+
       }
     )
     |> Repo.all()
