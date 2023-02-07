@@ -7,15 +7,41 @@
   <:col_header :let={asset} > 
     <%= asset.ticker %>
   </:col_header>
+  <:total :let={balances}>
+    <%= balances
+        |> Enum.reduce(0.0,
+          fn 
+          %{value: nil}, a -> a
+            b, a -> 
+              a + b.value
+        end)
+        |> Float.floor(2)
+    %> USD<br/>
+    <%# (<%= balances
+        |> Enum.reduce(0.0,
+          fn 
+          %{delta_value: nil}, a -> a
+            b, a -> 
+              a + b.value
+        end)
+        |> Float.floor(2)
+    % > %) %>
+  </:total>
   <:col_data :let={balance} > 
     <%= Float.floor(balance.amount, 4) %><br/>
-      <%= Float.floor(balance.value || 0.0, 2) %> USD <br/>
     <span class="text-green-700" :if={balance.delta > 0.0}>
       ( <%= Float.floor(balance.delta || 100.0, 2) %>%)
     </span>
     <span class="text-red-500" :if={balance.delta < 0.0}>
       ( <%= Float.floor(balance.delta || 100.0, 2) %>%)
+    </span><br/>
+      <%= Float.floor(balance.value || 0.0, 2) %> USD <br/>
+    <span class="text-green-700" :if={balance.delta_value > 0.0}>
+      ( <%= Float.floor(balance.delta_value || 100.0, 2) %>%)
     </span>
+    <span class="text-red-500" :if={balance.delta_value < 0.0}>
+      ( <%= Float.floor(balance.delta_value || 100.0, 2) %>%)
+    </span><br/>
   </:col_data>
 </.table_2d>
 
