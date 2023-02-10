@@ -2,7 +2,7 @@ name: Build Web Docker Image
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - web/*
 
