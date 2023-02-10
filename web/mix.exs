@@ -9,6 +9,9 @@ defmodule Portfolio.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
+      releases: releases(),
+      test_coverage: [tool: ExCoveralls],
+      dialyzer: dialyzer(),
       deps: deps()
     ]
   end
@@ -51,7 +54,33 @@ defmodule Portfolio.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+
+      # Testing
+      {:excoveralls, "~> 0.14.0", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.2.0", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.6.0", only: [:dev, :test], runtime: false},
+      {:faker, "~> 0.17.0", only: [:dev, :test]},
+      {:ex_machina, "~> 2.7.0", only: [:test]}
+    ]
+  end
+
+  defp releases do
+    [
+      midas: [
+        applications: [
+          runtime_tools: :permanent
+        ],
+        include_executables_for: [:unix],
+        path: "dist"
+      ]
+    ]
+  end
+
+  defp dialyzer do
+    [
+      plt_file: {:no_warn, "priv/plts/dialyzer.plt"},
+      ignore_warnings: ".dialyzer_ignore.exs"
     ]
   end
 
