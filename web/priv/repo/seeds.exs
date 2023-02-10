@@ -19,6 +19,7 @@ alias Portfolio.Wallets.Wallet
 })
 |> Portfolio.Repo.insert!()
 
+
 %Wallet{}
 |> Wallet.changeset(%{
   id: 1,
