@@ -25,7 +25,7 @@ alias Portfolio.Wallets.Wallet
   name: "Binance",
   type: 2
 })
-|> Portfolio.Repo.insert!()
+|> Portfolio.Repo.insert()
 
 %Wallet{}
 |> Wallet.changeset(%{
@@ -34,7 +34,7 @@ alias Portfolio.Wallets.Wallet
   type: 2,
   parent_id: 1
 })
-|> Portfolio.Repo.insert!()
+|> Portfolio.Repo.insert()
 
 %Wallet{}
 |> Wallet.changeset(%{
@@ -43,4 +43,4 @@ alias Portfolio.Wallets.Wallet
   type: 2,
   parent_id: 1
 })
-|> Portfolio.Repo.insert!()
+|> Portfolio.Repo.insert()
