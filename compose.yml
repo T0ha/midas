@@ -25,6 +25,17 @@ services:
       #  - ./python:/opt
     networks:
       - portfolio-network
+  web:
+    image: ghcr.io/t0ha/midas-web:latest
+      #container_name: postgres
+    env_file: .env
+    hostname: web
+    ports:
+      - 127.0.0.1:4000:4000
+      #volumes:
+      #  - ./python:/opt
+    networks:
+      - portfolio-network
 
 networks:
   portfolio-network:
