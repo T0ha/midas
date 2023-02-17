@@ -1,0 +1,31 @@
+name: Deploy Test
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - python/*
+      - web/*
+      - web/**/*
+
+defaults:
+  run:
+    shell: bash
+    
+jobs:
+  deploy_docker_imag:
+    name: Deploy Image
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Deploy to test
+        uses: cross-the-world/ssh-pipeline@master
+        with:
+          host: ${{ env.DO_HOST }}
+          user: ${{ secrets.DO_USER }}
+          key: ${{ secrets.DO__KEY }}
+          connect_timeout: 10s
+          script: |
+            cd ~/projects/midas
+            git pull
+            docker compose pull
+            docker compose up --build -d
