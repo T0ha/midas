@@ -67,7 +67,7 @@
       Attempting to reconnect <Heroicons.arrow_path class="ml-1 w-3 h-3 inline animate-spin" />
     </.flash>
     <div class="w-full flex">
-      <div class="w-64 min-h-screen p-4 flex-none bg-slate-100 text-slate-600">
+      <div :if={@current_user} class="w-64 min-h-screen p-4 flex-none bg-slate-100 text-slate-600">
         <ul>
           <li>
             <.link href={~p"/prices"}>Prices history</.link>
