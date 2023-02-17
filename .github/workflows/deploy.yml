@@ -3,10 +3,10 @@ on:
   push:
     branches:
       - main
-    paths:
-      - python/*
-      - web/*
-      - web/**/*
+        # paths:
+        #   - python/*
+        #   - web/*
+        #   - web/**/*
 
 defaults:
   run:
@@ -17,15 +17,19 @@ jobs:
     name: Deploy Image
     runs-on: ubuntu-18.04
     steps:
+      - run: |
+          echo "${{ vars.DO_HOST }}"
+
       - name: Deploy to test
-        uses: cross-the-world/ssh-pipeline@master
+        uses: cross-the-world/ssh-scp-ssh-pipelines@latest
         with:
-          host: ${{ env.DO_HOST }}
+          host: ${{ vars.DO_HOST }}
           user: ${{ secrets.DO_USER }}
-          key: ${{ secrets.DO__KEY }}
+          key: ${{ secrets.DO_KEY }}
           connect_timeout: 10s
-          script: |
+          first_ssh: |
             cd ~/projects/midas
+            ls
             git pull
             docker compose pull
             docker compose up --build -d
