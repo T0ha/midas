@@ -16,7 +16,7 @@
               a + b.value
         end)
         |> Float.floor(2)
-    %> USD<br/>
+    %> <%= @currency || "usd" %><br/>
     <%# (<%= balances
         |> Enum.reduce(0.0,
           fn 
@@ -35,7 +35,7 @@
     <span class="text-red-500" :if={balance.delta < 0.0}>
       ( <%= Float.floor(balance.delta || 100.0, 2) %>%)
     </span><br/>
-      <%= Float.floor(balance.value || 0.0, 2) %> USD <br/>
+      <%= Float.floor(balance.value || 0.0, 2) %> <%= @currency || "usd" %> <br/>
     <span class="text-green-700" :if={balance.delta_value > 0.0}>
       ( <%= Float.floor(balance.delta_value || 100.0, 2) %>%)
     </span>

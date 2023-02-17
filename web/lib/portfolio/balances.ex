@@ -32,10 +32,11 @@ defmodule Portfolio.Balances do
       [%Balance{}, ...]
 
   """
-  def list_balances_for_user(%User{id: id}), do: 
-      list_balances_for_user(id)
+  def list_balances_for_user(user, currency \\ "usd")
+  def list_balances_for_user(%User{id: id}, currency), do: 
+      list_balances_for_user(id, currency)
 
-  def list_balances_for_user(user_id) do
+  def list_balances_for_user(user_id, currency) do
     from(b in Balance, 
       join: a in assoc(b, :asset),
       left_join: bo in Balance,
@@ -44,11 +45,11 @@ defmodule Portfolio.Balances do
         and b.wallet_id == bo.wallet_id,
       left_join: p in Price,
       on: p.date == b.date 
-        and p.currency == "usd"
+        and p.currency == ^currency
         and p.asset_id == b.asset_id,
       left_join: po in Price,
       on: po.date == bo.date 
-        and po.currency == "usd"
+        and po.currency == ^currency
         and po.asset_id == b.asset_id,
       where: b.user_id == ^user_id,
       order_by: [desc: b.date, asc: b.asset_id],
