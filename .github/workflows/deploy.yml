@@ -28,8 +28,8 @@ jobs:
           key: ${{ secrets.DO_KEY }}
           connect_timeout: 10s
           first_ssh: |
+            ssh-add deploy_key
             cd ~/projects/midas
-            ls
             git pull
             docker compose pull
             docker compose up --build -d
