@@ -2,13 +2,13 @@ defmodule PortfolioWeb.PriceLive.Index do
   use PortfolioWeb, :live_view
 
   alias Portfolio.Assets
-  alias PortfolioWeb.AssignCurrency
+  alias PortfolioWeb.AssignTopSelects
 
   @impl true
   def mount(_params, _session, socket) do
     {:ok,
       socket
-      |> assign(:prices, list_prices(socket.assigns['currency'], socket.assigns.current_user_assets))
+      |> assign(:prices, list_prices(socket.assigns['currency'], socket.assigns['period'], socket.assigns.current_user_assets))
     }
   end
 
@@ -24,18 +24,16 @@ defmodule PortfolioWeb.PriceLive.Index do
   end
 
   @impl true
-  def handle_event("change_currency", %{"currency" => currency} = params, socket) do
+  def handle_event("change_selects", %{"currency" => currency, "period" => period} = params, socket) do
     {:noreply,
       socket
-      |> AssignCurrency.change_currency(params)
-      |> assign(:prices, list_prices(currency, socket.assigns.current_user_assets))
+      |> AssignTopSelects.change_selects(params)
+      |> assign(:prices, list_prices(currency, period, socket.assigns.current_user_assets))
     }
     end
 
-  defp list_prices(currency \\ "usd", assets \\ [])
-  defp list_prices(nil, assets), do: list_prices("usd", assets)
-  defp list_prices(currency, assets) do
-    currency
-    |> Assets.list_prices(assets)
-  end
+  defp list_prices(currency \\ "usd", period \\ "day", assets \\ [])
+  defp list_prices(nil, nil, assets), do: list_prices("usd", "day", assets)
+  defp list_prices(currency, period, assets), do:
+    Assets.list_prices(currency, period, assets)
 end

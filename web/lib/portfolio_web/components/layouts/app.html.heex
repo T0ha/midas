@@ -13,21 +13,31 @@
         MIDAS
       </p>
     </div>
-    <div class="flex w-20 items-right gap-4">
-      <.simple_form :let={f} 
+    <div class="flex w-40 items-right gap-4">
+      <.form :let={f} 
         for={:currency} 
-        phx-change="change_currency"
-        class="w-full"
+        phx-change="change_selects"
+        class="w-full flex gap-4"
         >
         <.input
           field={{f, :currency}}
           id="currency" 
           type="select"
+          label="Currency"
           name="currency"
           value={@currency}
           options={@currencies}
         />
-      </.simple_form>
+        <.input
+          field={{f, :period}}
+          id="period" 
+          type="select"
+          label="Period"
+          name="period"
+          value={@period}
+          options={@periods}
+        />
+      </.form>
     </div>
     <ul>
       <%= if @current_user do %>

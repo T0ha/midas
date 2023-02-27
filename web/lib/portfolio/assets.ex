@@ -5,6 +5,7 @@ defmodule Portfolio.Assets do
 
   import Ecto.Query, warn: false
   alias Portfolio.Repo
+  alias Portfolio.EctoHelpers
 
   alias Portfolio.Assets.{Asset, Price}
   alias Portfolio.Balances.Balance
@@ -147,26 +148,22 @@ defmodule Portfolio.Assets do
 
   ## Examples
 
-      iex> list_prices(currency)
+      iex> list_prices(currency, period, [])
       [%Price{}, ...]
 
   """
-  def list_prices(currency \\ "usd", assets \\ [])
+  def list_prices(currency \\ "usd", period \\ "day", assets \\ [])
 
-  def list_prices(currency, [%Asset{} | _] = assets), do: 
-    list_prices(currency, Enum.map(assets, & &1.id))
+  def list_prices(currency, period, [%Asset{} | _] = assets), do: 
+    list_prices(currency, period, Enum.map(assets, & &1.id))
 
-  def list_prices(currency, asset_ids) do
+  def list_prices(currency, period, asset_ids) do
     from(
       p in Price,
       left_join: po in Price,
         on: p.asset_id == po.asset_id 
-          and po.date == date_add(p.date, -1, "day")
+          and po.date == date_add(p.date, -1, ^period)
           and p.currency == po.currency,
-      where: p.currency == ^currency 
-        and (  ^(asset_ids == []) or
-          p.asset_id in ^asset_ids
-        ),
       order_by: [desc: p.date, asc: p.asset_id],
       select: %{
         date: p.date, 
@@ -175,8 +172,18 @@ defmodule Portfolio.Assets do
         delta: (p.price - po.price) / po.price * 100.0
       }
     )
+    |> where([p], p.currency == ^currency)
+    |> case do
+      q when asset_ids != [] ->
+        where(q, [p], p.asset_id in ^asset_ids)
+      q ->
+        q
+      end
+    |> EctoHelpers.period_query(period)
+    |> IO.inspect()
     |> Repo.all()
   end
+
 
   @doc """
   Gets a single price.

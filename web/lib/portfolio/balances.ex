@@ -4,11 +4,11 @@ defmodule Portfolio.Balances do
   """
 
   import Ecto.Query, warn: false
-  alias Portfolio.Repo
+  alias Portfolio.{EctoHelpers, Repo}
 
   alias Portfolio.Accounts.User
-  alias Portfolio.Balances.Balance
   alias Portfolio.Assets.Price
+  alias Portfolio.Balances.Balance
 
   @doc """
   Returns the list of balances.
@@ -28,20 +28,20 @@ defmodule Portfolio.Balances do
 
   ## Examples
 
-      iex> list_balances_for_user(1, "usd")
+      iex> list_balances_for_user(1, "usd", "day")
       [%Balance{}, ...]
 
   """
-  def list_balances_for_user(user, currency \\ "usd")
-  def list_balances_for_user(%User{id: id}, currency), do: 
-      list_balances_for_user(id, currency)
+  def list_balances_for_user(user, currency \\ "usd", period \\ "day")
+  def list_balances_for_user(%User{id: id}, currency, period), do: 
+      list_balances_for_user(id, currency, period)
 
-  def list_balances_for_user(user_id, currency) do
+  def list_balances_for_user(user_id, currency, period) do
     from(b in Balance, 
       join: a in assoc(b, :asset),
       left_join: bo in Balance,
       on: b.asset_id == bo.asset_id
-        and b.date == date_add(bo.date, 1, "day")
+        and b.date == date_add(bo.date, 1, ^period)
         and b.wallet_id == bo.wallet_id,
       left_join: p in Price,
       on: p.date == b.date 
@@ -66,6 +66,7 @@ defmodule Portfolio.Balances do
 
       }
     )
+    |> EctoHelpers.period_query(period)
     |> Repo.all()
   end
 

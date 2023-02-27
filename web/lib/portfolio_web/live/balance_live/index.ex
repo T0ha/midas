@@ -2,11 +2,11 @@ defmodule PortfolioWeb.BalanceLive.Index do
   use PortfolioWeb, :live_view
 
   alias Portfolio.Balances
-  alias PortfolioWeb.AssignCurrency
+  alias PortfolioWeb.AssignTopSelects
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :balances, list_balances(socket.assigns.current_user, socket.assigns.currency))}
+    {:ok, assign(socket, :balances, list_balances(socket.assigns.current_user, socket.assigns.currency, socket.assigns['period']))}
   end
 
   @impl true
@@ -21,15 +21,17 @@ defmodule PortfolioWeb.BalanceLive.Index do
   end
 
   @impl true
-  def handle_event("change_currency", %{"currency" => currency} = params, socket) do
+  def handle_event("change_selects", %{"currency" => currency, "period" => period} = params, socket) do
     {:noreply,
       socket
-      |> AssignCurrency.change_currency(params)
-      |> assign(:balances, list_balances(socket.assigns.current_user, currency))
+      |> AssignTopSelects.change_selects(params)
+      |> assign(:balances, list_balances(socket.assigns.current_user, currency, period))
     }
   end
 
-  defp list_balances(user, currency) do
-    Balances.list_balances_for_user(user.id, currency)
+  defp list_balances(user, currency, nil), do: 
+    list_balances(user, currency, "day")
+  defp list_balances(user, currency, period) do
+    Balances.list_balances_for_user(user.id, currency, period)
   end
 end
