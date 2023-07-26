@@ -2,7 +2,7 @@ name: Deploy Test
 on:
   push:
     branches:
-      - main
+      - 1main
         # paths:
         #   - python/*
         #   - web/*
@@ -15,7 +15,7 @@ defaults:
 jobs:
   deploy_docker_imag:
     name: Deploy Image
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - run: |
           echo "${{ vars.DO_HOST }}"
