@@ -22,7 +22,7 @@ defmodule Portfolio.MixProject do
   def application do
     [
       mod: {Portfolio.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :ethereumex]
     ]
   end
 
@@ -57,6 +57,9 @@ defmodule Portfolio.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:timex, "~> 3.7"},
 
+      #Crypto and web3
+      {:ethereumex, "~> 0.10"},
+      {:abi, "~> 0.1"},
       # Testing
       {:excoveralls, "~> 0.14.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.2.0", only: [:dev, :test], runtime: false},
